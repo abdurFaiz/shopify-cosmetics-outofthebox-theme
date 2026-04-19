@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/* Tell Tailwind v4 to scan all Liquid template files for classes */
+@source "../sections/**/*.liquid";
+@source "../snippets/**/*.liquid";
+@source "../layout/**/*.liquid";
+@source "../blocks/**/*.liquid";
+@source "../templates/**/*.liquid";
+
+/* Custom theme configuration */
+@theme {
+  /* Colors */
+  --color-cosmetics-cream: #f5f1ed;
+  --color-cosmetics-dark: #2a2a2a;
+
+  /* Fonts */
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .backdrop-blur-glass {
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
