@@ -186,14 +186,14 @@
     </div>
 
     <!-- Product Card - Above CTA button -->
-    <div class="absolute right-6 md:right-8 lg:right-12" style="bottom: 90px;">
+    <div class="absolute right-6 md:right-8 lg:right-12" style="bottom: 120px;">
       {%- comment -%} Card 1 - Renew {%- endcomment -%}
       <div
-        class="testimonial-card active bg-white shadow-sm overflow-hidden"
+        class="testimonial-card active bg-white overflow-hidden"
         data-index="0"
         style="width:184px;">
         {%- comment -%} Product Image - Full width, no padding {%- endcomment -%}
-        <div class="w-full bg-gray-100  flex items-center justify-center" style="height:250px; padding:8px">
+        <div class="w-full bg-white  flex items-center justify-center" style="height:250px; padding:8px">
           {% if section.settings.product_image_1 %}
             <img
               src="{{ section.settings.product_image_1 | image_url: width: 260 }}"
@@ -221,10 +221,10 @@
 
       {%- comment -%} Card 2 - Activate {%- endcomment -%}
       <div
-        class="testimonial-card bg-white shadow-sm overflow-hidden hidden"
+        class="testimonial-card bg-white overflow-hidden hidden"
         data-index="1"
         style="width:184px;">
-        <div class="w-full bg-gray-100  flex items-center justify-center" style="height:250px; padding:8px">
+        <div class="w-full bg-white flex items-center justify-center" style="height:250px; padding:8px">
           {% if section.settings.product_image_2 %}
             <img
               src="{{ section.settings.product_image_2 | image_url: width: 560 }}"
@@ -250,10 +250,10 @@
 
       {%- comment -%} Card 3 - Balance {%- endcomment -%}
       <div
-        class="testimonial-card bg-white shadow-sm overflow-hidden hidden"
+        class="testimonial-card bg-white  overflow-hidden hidden"
         data-index="2"
         style="width:184px;">
-        <div class="w-full bg-gray-100  flex items-center justify-center" style="height:250px; padding:8px">
+        <div class="w-full bg-white  flex items-center justify-center" style="height:250px; padding:8px">
           {% if section.settings.product_image_3 %}
             <img
               src="{{ section.settings.product_image_3 | image_url: width: 560 }}"
@@ -261,7 +261,7 @@
               class="w-full h-full object-contain">
           {% else %}
             <img
-              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776604840"
+              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776659921"
               alt="Product"
               class="w-full h-full object-contain">
           {% endif %}

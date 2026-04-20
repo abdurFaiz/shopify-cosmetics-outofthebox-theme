@@ -21,14 +21,9 @@
           }}
         </a>
       {% else %}
-        <a href="{{ routes.root_url }}" style="font-size:18px;font-weight:700;text-decoration:none;color:inherit;letter-spacing:0.05em;">
+        <a href="{{ routes.root_url }}" class="font-medium uppercase" style="font-size:18px;text-decoration:none;color:inherit;letter-spacing:0.05em;">
           {{ shop.name }}
         </a>
-      {% endif %}
-      {% if section.settings.tagline != blank %}
-        <span style="display:none;font-size:11px;opacity:0.6;border-left:1px solid currentColor;padding-left:8px;margin-left:8px;" class="tagline-desktop">
-          {{ section.settings.tagline }}
-        </span>
       {% endif %}
     </div>
 

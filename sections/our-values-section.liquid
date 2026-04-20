@@ -1,0 +1,533 @@
+<section
+  id="our-values-{{ section.id }}"
+  class="our-values-section full-width relative w-full overflow-hidden"
+  style="min-height: {{ section.settings.min_height }}px;">
+  {{- '<!-- Background video -->' }}
+  <div class="absolute inset-0 z-0">
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      class="w-full h-full object-cover object-center"
+      style="pointer-events: none;">
+      <source src="https://cdn.shopify.com/videos/c/o/v/495a68b75b5c477590972a9e689a0469.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  {{- '<!-- Dark overlay -->' }}
+  <div class="absolute inset-0 z-1 pointer-events-none" style="background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.18) 40%, rgba(0,0,0,0.08) 100%);"></div>
+
+  {{- '<!-- Content layer -->' }}
+  <div class="relative z-10 flex flex-col justify-between w-full h-full px-0 py-12 box-border" style="min-height: {{ section.settings.min_height }}px;">
+
+    {{- '<!-- Top-left heading -->' }}
+    <div class="max-w-[480px] px-10">
+      {% if section.settings.heading != blank %}
+        <h2 class="m-0 text-white font-normal leading-tight text-[42px] md:text-[52px]">
+          {{ section.settings.heading }}
+        </h2>
+      {% endif %}
+    </div>
+
+    {{- '<!-- Bottom row: controls left, cards right -->' }}
+    <div class="flex items-end justify-between gap-8 mt-auto">
+
+      {{- '<!-- Prev / Next controls (left side) -->' }}
+      <div class="flex items-center gap-2 px-10 shrink-0">
+        <button
+          id="our-values-prev-{{ section.id }}"
+          class="our-values-prev flex items-center justify-center w-14 h-14 bg-white cursor-pointer  transition-colors duration-300"
+          aria-label="{{ section.settings.prev_label | default: 'Previous' }}">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            class=""
+            fill="none"
+            aria-hidden="true">
+            <path
+              d="M10 3L5 8L10 13"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          id="our-values-next-{{ section.id }}"
+          class="our-values-prev flex items-center justify-center w-14 h-14 bg-white cursor-pointer transition-colors duration-300"
+          aria-label="{{ section.settings.next_label | default: 'Next' }}">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            class=""
+            fill="none"
+            aria-hidden="true">
+            <path
+              d="M6 3L11 8L6 13"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      {{- '<!-- Scrollable cards track (right side) -->' }}
+      {{- '<!-- Wrapper width = 2 full cards + gap + half card, so exactly 2.5 cards are visible -->' }}
+      <div class="our-values-track-wrapper overflow-hidden shrink-0" style="width: calc({{ section.settings.card_width }}px * 2.5 + 16px * 2);">
+        <div
+          id="our-values-track-{{ section.id }}"
+          class="our-values-track flex will-change-transform"
+          style="cursor: grab; gap: 16px;">
+
+          {{- '<!-- Original cards -->' }}
+          {% assign card_blocks = section.blocks | where: 'type', 'card' %}
+
+          {% for block in card_blocks %}
+            <div
+              class="our-values-card shrink-0 relative overflow-hidden"
+              style="width: {{ section.settings.card_width }}px; height: {{ section.settings.card_image_height }}px;"
+              {{ block.shopify_attributes }}>
+
+              {{- '<!-- Card image — full bleed -->' }}
+              <div class="absolute inset-0 w-full h-full overflow-hidden">
+                {% if block.settings.image %}
+                  {{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', class: 'our-values-card__img w-full h-full object-cover object-center', alt: block.settings.image.alt, width: 600, height: section.settings.card_image_height }}
+                {% else %}
+                  {% assign fallback_images = 'https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-1.jpg?v=1776682231,https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-2.jpg?v=1776682230,https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-3.jpg?v=1776682229' | split: ',' %}
+                  {% assign fallback_src = fallback_images[forloop.index0] | default: fallback_images[0] %}
+                  <img
+                    src="{{ fallback_src }}"
+                    loading="lazy"
+                    class="our-values-card__img w-full h-full object-cover"
+                    alt="Our values"
+                    width="700">
+                {% endif %}
+              </div>
+
+              {{- '<!-- Card text panel — overlaps bottom ~55% of card -->' }}
+              <div class="our-values-card__panel absolute bottom-0 right-0 flex flex-col justify-between px-6 py-6" style="width: 62%; height: 58%; background: #f2ede4;">
+                {% if block.settings.title != blank %}
+                  <h3 class="m-0 font-sans font-bold text-[#1a1a0e] text-[14px] uppercase tracking-[0.06em] leading-snug">
+                    {{ block.settings.title }}
+                  </h3>
+                {% endif %}
+                {% if block.settings.body != blank %}
+                  <p class="m-0 font-sans font-normal text-[#3a3a2a] text-[12px] leading-relaxed">
+                    {{ block.settings.body }}
+                  </p>
+                {% endif %}
+              </div>
+
+            </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<style>
+  #our-values-{{ section.id }} .our-values-track-wrapper {
+  ;
+  /* overflow-hidden is set inline; nothing extra needed */
+}
+
+#our-values-{{ section.id }}
+.our-values-track {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#our-values-{{ section.id }}
+.our-values-track.is-dragging {
+  cursor: grabbing;
+}
+
+/* ── Card hover effects ─────────────────────────────────────────────────── */
+#our-values-{{ section.id }} .our-values-card__img {
+  transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+#our-values-{{ section.id }}.our-values-card:hover .our-values-card__img {
+  transform: scale(1.07);
+}
+
+#our-values-{{ section.id }}
+.our-values-card__panel {
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+  , box-shadow 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+#our-values-{{ section.id }}.our-values-card:hover .our-values-card__panel {
+  transform: translateY(-6px);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.10);
+}
+
+/* Subtle right-edge fade to hint at more cards */
+#our-values-{{ section.id }}::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(0,0,0,0.18));
+  pointer-events: none;
+  z-index: 11;
+}
+
+@media (max-width: 768px) {
+  #our-values-{{ section.id }} .our-values-card {
+    width: 260px !important;
+  }
+  #our-values-{{ section.id }}
+  .our-values-track-wrapper {
+    width: calc(260px * 2.5 + 16px * 2) !important;
+  }
+}
+</style>
+
+<script>
+  (function () {
+    'use strict';
+  
+    const sectionId = '{{ section.id }}';
+    const track     = document.getElementById('our-values-track-' + sectionId);
+    const prevBtn   = document.getElementById('our-values-prev-' + sectionId);
+    const nextBtn   = document.getElementById('our-values-next-' + sectionId);
+  
+    if (!track || !prevBtn || !nextBtn) return;
+  
+    const GAP = 16; // matches gap: 16px on the track
+  
+    // ── Infinite loop setup ──────────────────────────────────────────────────
+    // Clone all original cards and append/prepend them so the list wraps.
+    // Layout: [clones-of-last-N] [originals] [clones-of-first-N]
+    // We keep CLONE_COUNT = total cards so there's always enough buffer.
+  
+    const originals = Array.from(track.querySelectorAll('.our-values-card'));
+    const total     = originals.length;
+    if (total === 0) return;
+  
+    // Prepend clones of the last `total` originals
+    const prependFrag = document.createDocumentFragment();
+    for (let i = total - 1; i >= 0; i--) {
+      const clone = originals[i].cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.removeAttribute('data-shopify-editor-block'); // strip editor attrs
+      prependFrag.appendChild(clone);
+    }
+    // Insert in correct order (last→first reversed above, so reverse again)
+    const prependArr = Array.from(prependFrag.childNodes).reverse();
+    prependArr.forEach(function (node) { track.insertBefore(node, track.firstChild); });
+  
+    // Append clones of the first `total` originals
+    for (let i = 0; i < total; i++) {
+      const clone = originals[i].cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    }
+  
+    // ── State ────────────────────────────────────────────────────────────────
+    // "Real" index 0 = first original card.
+    // In the DOM the originals start at position `total` (after the prepended clones).
+    let currentIndex = 0; // logical index into originals (0 … total-1)
+    let isDragging   = false;
+    let startX       = 0;
+    let startTransX  = 0;
+    let isAnimating  = false;
+  
+    function getStep() {
+      const cards = track.querySelectorAll('.our-values-card');
+      if (!cards.length) return 0;
+      return cards[0].offsetWidth + GAP;
+    }
+  
+    // DOM index of the first original card
+    function domIndexOf(logicalIndex) {
+      return total + logicalIndex; // prepended `total` clones come first
+    }
+  
+    function getTranslateX() {
+      const style  = window.getComputedStyle(track);
+      const matrix = new DOMMatrix(style.transform);
+      return matrix.m41;
+    }
+  
+    function setTranslateX(x, animate, onDone) {
+      if (typeof gsap !== 'undefined') {
+        if (!animate) {
+          gsap.set(track, { x: x });
+          if (onDone) onDone();
+        } else {
+          gsap.to(track, {
+            x: x,
+            duration: 0.55,
+            ease: 'power2.out',
+            onComplete: onDone || null
+          });
+        }
+      } else {
+        track.style.transition = animate ? 'transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
+        track.style.transform  = 'translateX(' + x + 'px)';
+        if (onDone) {
+          if (animate) {
+            track.addEventListener('transitionend', function handler() {
+              track.removeEventListener('transitionend', handler);
+              onDone();
+            });
+          } else {
+            onDone();
+          }
+        }
+      }
+    }
+  
+    function targetXForIndex(logicalIndex) {
+      return -(domIndexOf(logicalIndex) * getStep());
+    }
+  
+    // Jump without animation (used after infinite-loop teleport)
+    function teleportToIndex(logicalIndex) {
+      currentIndex = ((logicalIndex % total) + total) % total;
+      setTranslateX(targetXForIndex(currentIndex), false);
+    }
+  
+    function slideTo(logicalIndex, animate) {
+      if (isAnimating) return;
+      isAnimating = true;
+  
+      const wrapped = ((logicalIndex % total) + total) % total;
+  
+      // Decide whether to slide through a clone first (for seamless wrap)
+      // If going forward past the last card, slide to the clone then teleport
+      // If going backward past the first card, slide to the clone then teleport
+      let slideTarget = logicalIndex; // may be out of [0, total-1]
+  
+      // Compute the DOM index for the slide target (could be in clone zone)
+      const domTarget = total + slideTarget; // works for ±1 out-of-range too
+      const targetX   = -(domTarget * getStep());
+  
+      setTranslateX(targetX, animate !== false, function () {
+        // After animation, silently jump to the real position
+        currentIndex = wrapped;
+        setTranslateX(targetXForIndex(currentIndex), false);
+        isAnimating = false;
+      });
+    }
+  
+    // ── Init position ────────────────────────────────────────────────────────
+    // Start at logical index 0 (no animation, no flash)
+    teleportToIndex(0);
+  
+    // ── Arrow controls ───────────────────────────────────────────────────────
+    prevBtn.addEventListener('click', function () {
+      slideTo(currentIndex - 1, true);
+    });
+  
+    nextBtn.addEventListener('click', function () {
+      slideTo(currentIndex + 1, true);
+    });
+  
+    // ── Drag / swipe ─────────────────────────────────────────────────────────
+    function onPointerDown(e) {
+      if (isAnimating) return;
+      isDragging  = true;
+      startX      = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+      startTransX = getTranslateX();
+      track.classList.add('is-dragging');
+      if (typeof gsap !== 'undefined') gsap.killTweensOf(track);
+    }
+  
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+      const delta   = clientX - startX;
+      setTranslateX(startTransX + delta, false);
+    }
+  
+    function onPointerUp(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('is-dragging');
+  
+      const clientX = e.type === 'touchend'
+        ? (e.changedTouches[0] ? e.changedTouches[0].clientX : startX)
+        : e.clientX;
+      const delta = clientX - startX;
+      const step  = getStep();
+  
+      if (Math.abs(delta) > step * 0.2) {
+        slideTo(delta < 0 ? currentIndex + 1 : currentIndex - 1, true);
+      } else {
+        // Snap back
+        isAnimating = true;
+        setTranslateX(targetXForIndex(currentIndex), true, function () {
+          isAnimating = false;
+        });
+      }
+    }
+  
+    track.addEventListener('mousedown',  onPointerDown);
+    track.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('mouseup',   onPointerUp);
+    window.addEventListener('touchend',  onPointerUp);
+  
+    // Prevent browser drag on images/links
+    track.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  
+    // ── Keyboard ─────────────────────────────────────────────────────────────
+    prevBtn.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); slideTo(currentIndex - 1, true); }
+    });
+    nextBtn.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); slideTo(currentIndex + 1, true); }
+    });
+  
+    // ── Resize ───────────────────────────────────────────────────────────────
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { teleportToIndex(currentIndex); }, 150);
+    });
+  
+  })();
+</script>
+
+{% schema %}
+  {
+    "name": "Our Values — Community",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background Image"
+      },
+      {
+        "type": "text",
+        "id": "text-value",
+        "label": "our value",
+        "default": "Your skin doesn't follow a number, it follows biology. Face Formula is skincare shaped by function, not by age."
+      },
+      {
+        "type": "color",
+        "id": "fallback_bg_color",
+        "label": "Fallback Background Color",
+        "default": "#3a4a2e"
+      }, {
+        "type": "range",
+        "id": "min_height",
+        "label": "Section Min Height (px)",
+        "min": 780,
+        "max": 1000,
+        "step": 20,
+        "default": 780
+      }, {
+        "type": "header",
+        "content": "Heading"
+      }, {
+        "type": "text",
+        "id": "heading",
+        "label": "Section Heading",
+        "default": "Designed With Intention"
+      }, {
+        "type": "header",
+        "content": "Cards"
+      }, {
+        "type": "range",
+        "id": "card_width",
+        "label": "Card Width (px)",
+        "min": 380,
+        "max": 500,
+        "step": 10,
+        "default": 380
+      }, {
+        "type": "range",
+        "id": "card_image_height",
+        "label": "Card Image Height (px)",
+        "min": 480,
+        "max": 700,
+        "step": 10,
+        "default": 480
+      }, {
+        "type": "header",
+        "content": "Controls"
+      }, {
+        "type": "text",
+        "id": "prev_label",
+        "label": "Previous Button Aria Label",
+        "default": "Previous"
+      }, {
+        "type": "text",
+        "id": "next_label",
+        "label": "Next Button Aria Label",
+        "default": "Next"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "card",
+        "name": "Card",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Card Image"
+          }, {
+            "type": "text",
+            "id": "title",
+            "label": "Card Title",
+            "default": "Hidden energy inside your crops"
+          }, {
+            "type": "textarea",
+            "id": "body",
+            "label": "Card Body",
+            "default": "A look at the unseen lipids inside grass — the hidden energy that boosts milk quality, increases efficiency, and cuts methane."
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Our Values — Community",
+        "category": "Content",
+        "blocks": [
+          {
+            "type": "card",
+            "settings": {
+              "title": "Hidden energy inside your crops",
+              "body": "A look at the unseen lipids inside grass — the hidden energy that boosts milk quality, increases efficiency, and cuts methane."
+            }
+          }, {
+            "type": "card",
+            "settings": {
+              "title": "Most fertilizers miss the crop. Croptab doesn't",
+              "body": "Why conventional fertilizers get lost before crops use them — and how one carbon-encapsulated tablet delivers nutrients without waste."
+            }
+          }, {
+            "type": "card",
+            "settings": {
+              "title": "Built for the field",
+              "body": "A market-first farming solution that matters — reducing waste and changing behaviour."
+            }
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

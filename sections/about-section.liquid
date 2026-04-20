@@ -1,0 +1,158 @@
+{% comment %} 
+                  About Section — "Born from ritual. Perfected by science." 
+                  2-column layout: left content panel + right full-bleed image
+{% endcomment %}
+
+<section style="background-color: {{ section.settings.background_color }};" class="full-width w-full overflow-hidden">
+  <div class="grid grid-cols-1 md:grid-cols-2 min-h-[560px]">
+
+    <!-- Left Column -->
+    <div class="flex flex-col gap-10 justify-center px-6 py-12 md:px-10 md:py-14 lg:px-14 bg-inherit order-2 md:order-1">
+
+      <!-- Heading -->
+      {% if section.settings.heading != blank %}
+        <h2 class="font-serif text-[26px] md:text-[34px] font-normal leading-[1.2] tracking-[-0.01em] text-[#2a2a2a] mb-7 md:mb-10 text-center">
+          {{ section.settings.heading }}
+        </h2>
+      {% endif %}
+
+      <!-- Two small gallery images -->
+      <div class="flex gap-6 mb-7 md:mb-10 justify-center">
+        <figure class="m-0 overflow-hidden aspect-[3/4] max-w-[130px] md:max-w-[220px] flex-1">
+          {% if section.settings.gallery_image_1 %}
+            {{ section.settings.gallery_image_1 | image_url: width: 400 | image_tag:
+ loading: 'lazy',
+ widths: '200, 400',
+ class: 'w-full h-full object-cover object-center block'
+            }}
+          {% else %}
+            <img
+              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/about_2.jpg?v=1776657491"
+              loading="lazy"
+              alt="Gallery image 1"
+              class="w-full h-full object-cover object-center block">
+          {% endif %}
+        </figure>
+        <figure class="m-0 overflow-hidden aspect-[3/4] max-w-[130px] md:max-w-[220px] flex-1">
+          {% if section.settings.gallery_image_2 %}
+            {{ section.settings.gallery_image_2 | image_url: width: 400 | image_tag:
+ loading: 'lazy',
+ widths: '200, 400',
+ class: 'w-full h-full object-cover object-center block'
+            }}
+          {% else %}
+            <img
+              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/about_3.jpg?v=1776657505"
+              loading="lazy"
+              alt="Gallery image 2"
+              class="w-full h-full object-cover object-center block">
+          {% endif %}
+        </figure>
+      </div>
+
+      <!-- Body text -->
+      {% if section.settings.body_text != blank %}
+        <p class="font-sans text-[13px] md:text-[14px] font-normal leading-[1.75] text-[#2a2a2a] text-center mb-8 max-w-[360px] self-center">
+          {{ section.settings.body_text }}
+        </p>
+      {% endif %}
+
+      <!-- CTA link -->
+      {% if section.settings.cta_label != blank and section.settings.cta_url != blank %}
+        <a href="{{ section.settings.cta_url }}" class="font-sans text-[12px] font-normal tracking-[0.1em] uppercase underline underline-offset-[3px] text-[#2a2a2a] self-center transition-opacity duration-200 hover:opacity-60">
+          {{ section.settings.cta_label }}
+        </a>
+      {% endif %}
+
+    </div>
+
+    <!-- Right Column — full-bleed portrait image -->
+    <div class="relative overflow-hidden min-h-[420px] md:min-h-[800px] order-1 md:order-2">
+      {% if section.settings.hero_image %}
+        {{ section.settings.hero_image | image_url: width: 1440 | image_tag:
+ loading: 'lazy',
+ widths: '600, 900, 1200',
+ class: 'absolute inset-0 w-full h-full object-cover object-top block'
+        }}
+      {% else %}
+        <img
+          src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/about_1.jpg?v=1776657480"
+          loading="lazy"
+          alt="About hero image"
+          class="absolute inset-0 w-full h-full object-cover object-top block">
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "About Section",
+    "settings": [
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Born from ritual. </br> Perfected by science."
+      },
+      {
+        "type": "header",
+        "content": "Gallery Images"
+      }, {
+        "type": "image_picker",
+        "id": "gallery_image_1",
+        "label": "Gallery Image 1",
+        "info": "Small portrait image — e.g. a key ingredient or texture close-up"
+      }, {
+        "type": "image_picker",
+        "id": "gallery_image_2",
+        "label": "Gallery Image 2",
+        "info": "Small portrait image — e.g. product flatlay or ritual moment"
+      }, {
+        "type": "header",
+        "content": "Body Content"
+      }, {
+        "type": "textarea",
+        "id": "body_text",
+        "label": "Body Text",
+        "default": "We believe beauty is a ritual, not a routine. Every formula we craft starts with skin science and ends with sensory pleasure — clean actives, luxurious textures, and ingredients chosen for what they do, not just how they look. Because your skin deserves both results and the experience of getting there."
+      }, {
+        "type": "header",
+        "content": "Call to Action"
+      }, {
+        "type": "text",
+        "id": "cta_label",
+        "label": "CTA Label",
+        "default": "DISCOVER OUR STORY"
+      }, {
+        "type": "url",
+        "id": "cta_url",
+        "label": "CTA URL"
+      }, {
+        "type": "header",
+        "content": "Hero Image"
+      }, {
+        "type": "image_picker",
+        "id": "hero_image",
+        "label": "Hero Image (Right Column)",
+        "info": "Tall portrait photo — model, product, or beauty ritual shot"
+      }
+    ],
+    "presets": [
+      {
+        "name": "About Section",
+        "category": "About"
+      }
+    ]
+  }
+{% endschema %}

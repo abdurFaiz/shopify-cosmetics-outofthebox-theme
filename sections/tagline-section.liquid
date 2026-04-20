@@ -1,0 +1,63 @@
+<section
+  id="tagline-{{ section.id }}"
+  class="full-width relative w-full overflow-hidden"
+  style="min-height: {{ section.settings.min_height }}px;">
+
+  {{- '<!-- Content layer -->' }}
+  <div class="relative z-10 flex items-center justify-center w-full h-full px-10 py-16 box-border" style="min-height: {{ section.settings.min_height }}px;">
+
+    {% if section.settings.text_value != blank %}
+      <p class="m-0 text-black font-serif text-center leading-snug" style="font-size: {{ section.settings.font_size }}px; max-width: {{ section.settings.max_width }}px;">
+        {{ section.settings.text_value }}
+      </p>
+    {% endif %}
+
+  </div>
+
+</section>
+
+{% schema %}
+  {
+    "name": "Tagline — Video",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "text_value",
+        "label": "Tagline Text",
+        "default": "Your skin doesn't follow a number, it follows biology. ECHMA is skincare shaped by function, not by age."
+      },
+      {
+        "type": "range",
+        "id": "font_size",
+        "label": "Font Size (px)",
+        "min": 16,
+        "max": 48,
+        "step": 2,
+        "default": 28
+      },
+      {
+        "type": "range",
+        "id": "max_width",
+        "label": "Text Max Width (px)",
+        "min": 300,
+        "max": 900,
+        "step": 20,
+        "default": 640
+      }, {
+        "type": "range",
+        "id": "min_height",
+        "label": "Section Min Height (px)",
+        "min": 200,
+        "max": 700,
+        "step": 20,
+        "default": 360
+      }
+    ],
+    "presets": [
+      {
+        "name": "Tagline — Video",
+        "category": "Content"
+      }
+    ]
+  }
+{% endschema %}

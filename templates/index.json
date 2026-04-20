@@ -3,9 +3,156 @@
     "main": {
       "type": "main-page",
       "settings": {}
+    },
+    "about": {
+      "type": "about-section",
+      "settings": {}
+    },
+    "preview-product": {
+      "type": "preview-product-section",
+      "settings": {
+        "background_color": "#ebebeb",
+        "heading": ""
+      },
+      "blocks": {
+        "product-card-1": {
+          "type": "product_card",
+          "settings": {
+            "product_title": "The Discovery Set",
+            "product_type": "EAU DE PARFUM SET",
+            "product_size": "4 X 1.5ML",
+            "product_price": "$25",
+            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826"
+          }
+        },
+        "product-card-2": {
+          "type": "product_card",
+          "settings": {
+            "product_title": "Somewhere but nowhere",
+            "product_type": "EAU DE PARFUM",
+            "product_size": "50ML",
+            "product_price": "$92",
+            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776659921"
+          }
+        },
+        "product-card-3": {
+          "type": "product_card",
+          "settings": {
+            "product_title": "Lovely and a little twisted",
+            "product_type": "EAU DE PARFUM",
+            "product_size": "50ML",
+            "product_price": "$92",
+            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-3.jpg?v=1776604855"
+          }
+        }
+      },
+      "block_order": [
+        "product-card-1",
+        "product-card-2",
+        "product-card-3"
+      ]
+    },
+    "banner-1-section": {
+      "type": "banner-1-section",
+      "settings": {}
+    },
+    "tagline-section": {
+      "type": "tagline-section",
+      "settings": {}
+    },
+    "our-values-section": {
+      "type": "our-values-section",
+      "settings": {},
+      "blocks": {
+        "card-1": {
+          "type": "card",
+          "settings": {
+            "title": "The biology your skin has been waiting for",
+            "body": "A closer look at the unseen signals inside your skin — the cellular pathways that drive hydration, restore elasticity, and rebuild barrier strength from within."
+          }
+        },
+        "card-2": {
+          "type": "card",
+          "settings": {
+            "title": "Most skincare sits on the surface. ECHMA Formula doesn't",
+            "body": "Why conventional moisturizers stop at the skin's outer layer — and how our bio-adaptive technology delivers active ingredients where renewal actually begins."
+          }
+        },
+        "card-3": {
+          "type": "card",
+          "settings": {
+            "title": "Built for how skin actually works",
+            "body": "A function-first skincare solution that responds to your biology — reducing stress signals and restoring balance at the source."
+          }
+        }
+      },
+      "block_order": [
+        "card-1",
+        "card-2",
+        "card-3"
+      ]
+    },
+    "testimonials-section": {
+      "type": "testimonials-section",
+      "settings": {
+        "background_color": "#f5f1ed",
+        "eyebrow": "ECHMA n YOU",
+        "heading": "Stories We Love to Tell",
+        "body_text": "Rooted in biology, lived in real skin. See how our community weaves ECHMA into the moments that matter most.",
+        "card_width": 700,
+        "card_gap": 14
+      },
+      "blocks": {
+        "community-card-1": {
+          "type": "card",
+          "settings": {
+            "username": "polonaamy",
+            "is_playing": true,
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-3.jpg?v=1776682229",
+            "hover_video_url": "https://cdn.shopify.com/videos/c/o/v/8e7aa04fab8749b1883ec86d4543a7cb.mp4",
+            "fallback_product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826",
+            "product_name": "Balancing Cream Cleanser",
+            "product_price": "$40.00"
+          }
+        },
+        "community-card-2": {
+          "type": "card",
+          "settings": {
+            "username": "alexislconway",
+            "is_playing": false,
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-2.jpg?v=1776682230",
+            "hover_video_url": "https://cdn.shopify.com/videos/c/o/v/b5b410bae61f4b5db61f7cd3e949219d.mp4"
+          }
+        },
+        "community-card-3": {
+          "type": "card",
+          "settings": {
+            "username": "username3",
+            "is_playing": false,
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-1.jpg?v=1776682231",
+            "hover_video_url": "https://cdn.shopify.com/videos/c/o/v/63cdaad57b6247cd8fbac28f05be40c8.mp4"
+          }
+        }
+      },
+      "block_order": [
+        "community-card-1",
+        "community-card-2",
+        "community-card-3"
+      ]
+    },
+    "social-section" : {
+      "type": "social-section",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "about",
+    "preview-product",
+    "banner-1-section",
+    "tagline-section",
+    "our-values-section",
+    "testimonials-section",
+    "social-section"
   ]
 }

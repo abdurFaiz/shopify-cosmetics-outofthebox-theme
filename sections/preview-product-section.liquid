@@ -1,0 +1,215 @@
+{% comment %} 
+                      Preview Product Section — 3-column product showcase grid 
+                      Layout: Equal-width columns separated by thin dividers, light gray background 
+                      Each card: centered product image + metadata row (name left, size left, price right)
+{% endcomment %}
+
+<section style="background-color: {{ section.settings.background_color }};" class="full-width w-full py-20 md:py-16">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="font-sans text-[13px] font-normal tracking-[0.12em] uppercase text-cosmetics-dark mb-8 md:mb-12 text-center">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 list-none p-0 m-0" role="list">
+
+        {%- for block in section.blocks -%}
+          {%- assign product_ref = all_products[block.settings.product] -%}
+
+            <li {{ block.shopify_attributes }} class="flex flex-col">
+            {%- comment -%} Image area — centered, generous padding {%- endcomment -%}
+            <a
+              href="{%- if product_ref != blank -%}{{ product_ref.url }}{%- elsif block.settings.product_url != blank -%}{{ block.settings.product_url }}{%- else -%}#{%- endif -%}"
+              class="flex flex-1 items-center justify-center px-8 py-10 md:py-14 transition-opacity duration-200 hover:opacity-80"
+              aria-label="{{ block.settings.product_title | default: product_ref.title | escape }}">
+              {%- if product_ref != blank and product_ref.featured_image -%}
+                {{ product_ref.featured_image
+ | image_url: width: 600
+ | image_tag:
+ loading: 'lazy',
+ widths: '300, 500, 600',
+ class: 'w-full max-w-[260px] md:max-w-[300px] h-auto object-contain mx-auto block',
+ alt: product_ref.featured_image.alt | default: product_ref.title | escape
+                }}
+              {%- elsif block.settings.product_image -%}
+                {{ block.settings.product_image
+ | image_url: width: 600
+ | image_tag:
+ loading: 'lazy',
+ widths: '300, 500, 600',
+ class: 'w-full max-w-[260px] md:max-w-[300px] h-auto object-contain mx-auto block',
+ alt: block.settings.product_title | escape
+                }}
+              {%- elsif block.settings.product_image_url != blank -%}
+                <img
+                  src="{{ block.settings.product_image_url }}"
+                  loading="lazy"
+                  class="w-full max-w-[260px] md:max-w-[300px] h-auto object-contain mx-auto block"
+                  alt="{{ block.settings.product_title | escape }}">
+              {%- else -%}
+                <div class="w-full max-w-[260px] md:max-w-[300px] aspect-square bg-gray-200 mx-auto"></div>
+              {%- endif -%}
+            </a>
+
+            {%- comment -%} Metadata row — name + price on left, cart button on right {%- endcomment -%}
+            <div class="border-t border-gray-200 px-0 pt-4 pb-6 flex items-center justify-between gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="font-sans text-[13px] font-normal leading-tight text-cosmetics-dark">
+                  {%- if product_ref != blank -%}
+                    {{ product_ref.title }}
+                  {%- else -%}
+                    {{ block.settings.product_title }}
+                  {%- endif -%}
+                </span>
+                <span class="font-sans text-[13px] font-normal text-cosmetics-dark">
+                  {%- if product_ref != blank -%}
+                    {{ product_ref.price | money_without_trailing_zeros }}
+                  {%- else -%}
+                    {{ block.settings.product_price }}
+                  {%- endif -%}
+                </span>
+              </div>
+
+              {%- comment -%} Add to cart button — dark circle with bag icon {%- endcomment -%}
+              {%- if product_ref != blank -%}
+                <button
+                  type="button"
+                  class="shrink-0 w-10 h-10 rounded-full bg-cosmetics-dark text-white flex items-center justify-center hover:opacity-80 transition-opacity duration-200"
+                  aria-label="Add {{ product_ref.title | escape }} to cart"
+                  data-product-id="{{ product_ref.variants.first.id }}">
+                  <span class="w-5 h-5">{% render 'icon-cart' %}</span>
+                </button>
+              {%- else -%}
+                <button
+                  type="button"
+                  class="shrink-0 w-10 h-10 rounded-full bg-cosmetics-dark text-white flex items-center justify-center hover:opacity-80 transition-opacity duration-200"
+                  aria-label="Add {{ block.settings.product_title | escape }} to cart">
+                  <span class="w-5 h-5">{% render 'icon-cart' %}</span>
+                </button>
+              {%- endif -%}
+            </div>
+
+          </li>
+        {%- endfor -%}
+
+      </ul>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Preview Product Section",
+    "settings": [
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "#ebebeb"
+      }, {
+        "type": "text",
+        "id": "heading",
+        "label": "Section Heading",
+        "info": "Optional label above the grid"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "product_card",
+        "name": "Product Card",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Product",
+            "info": "Select a product — title, type, price and image will be pulled automatically"
+          },
+          {
+            "type": "header",
+            "content": "Manual Override (used when no product is selected)"
+          },
+          {
+            "type": "image_picker",
+            "id": "product_image",
+            "label": "Product Image"
+          },
+          {
+            "type": "text",
+            "id": "product_image_url",
+            "label": "Product Image URL",
+            "info": "External image URL — used when no Shopify image is selected above"
+          }, {
+            "type": "text",
+            "id": "product_title",
+            "label": "Product Title",
+            "default": "Product Name"
+          }, {
+            "type": "text",
+            "id": "product_type",
+            "label": "Product Type / Subtitle",
+            "default": "EAU DE PARFUM",
+            "info": "Displayed in small uppercase below the title"
+          }, {
+            "type": "text",
+            "id": "product_size",
+            "label": "Size / Variant Label",
+            "default": "50ML",
+            "info": "Displayed top-right above the price (e.g. 50ML, 4 x 1.5ML)"
+          }, {
+            "type": "text",
+            "id": "product_price",
+            "label": "Price (manual)",
+            "default": "$92",
+            "info": "Used only when no product is selected above"
+          }, {
+            "type": "url",
+            "id": "product_url",
+            "label": "Product URL (manual)",
+            "info": "Used only when no product is selected above"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Preview Product Section",
+        "category": "Products",
+        "blocks": [
+          {
+            "type": "product_card",
+            "settings": {
+              "product_title": "The Discovery Set",
+              "product_type": "EAU DE PARFUM SET",
+              "product_size": "4 X 1.5ML",
+              "product_price": "$25",
+              "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826"
+            }
+          }, {
+            "type": "product_card",
+            "settings": {
+              "product_title": "Somewhere but nowhere",
+              "product_type": "EAU DE PARFUM",
+              "product_size": "50ML",
+              "product_price": "$92",
+              "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776604840"
+            }
+          }, {
+            "type": "product_card",
+            "settings": {
+              "product_title": "Lovely and a little twisted",
+              "product_type": "EAU DE PARFUM",
+              "product_size": "50ML",
+              "product_price": "$92",
+              "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-3.jpg?v=1776604855"
+            }
+          }
+        ]
+      }
+    ],
+    "max_blocks": 6
+  }
+{% endschema %}
