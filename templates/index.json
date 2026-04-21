@@ -12,37 +12,43 @@
       "type": "preview-product-section",
       "settings": {
         "background_color": "#ebebeb",
-        "heading": ""
+        "heading": "The ECHMA Collection"
       },
       "blocks": {
         "product-card-1": {
           "type": "product_card",
           "settings": {
-            "product_title": "The Discovery Set",
+            "product_title": "Regen Complex Serum",
             "product_type": "EAU DE PARFUM SET",
             "product_size": "4 X 1.5ML",
             "product_price": "$25",
-            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826"
+            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826",
+            "category_label": "Regen",
+            "badge_shape": "square"
           }
         },
         "product-card-2": {
           "type": "product_card",
           "settings": {
-            "product_title": "Somewhere but nowhere",
+            "product_title": "Superchage Glow Inside",
             "product_type": "EAU DE PARFUM",
             "product_size": "50ML",
             "product_price": "$92",
-            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776659921"
+            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776659921",
+            "category_label": "Reactive",
+            "badge_shape": "triangle"
           }
         },
         "product-card-3": {
           "type": "product_card",
           "settings": {
-            "product_title": "Lovely and a little twisted",
+            "product_title": "Rebalancing Skin Glow",
             "product_type": "EAU DE PARFUM",
             "product_size": "50ML",
             "product_price": "$92",
-            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-3.jpg?v=1776604855"
+            "product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-3.jpg?v=1776604855",
+            "category_label": "Rebalance",
+            "badge_shape": "oval"
           }
         }
       },
@@ -140,9 +146,53 @@
         "community-card-3"
       ]
     },
-    "social-section" : {
+    "social-section": {
       "type": "social-section",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "social-post-1": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_3.jpg?v=1776738649",
+            "aspect_ratio": "3:4",
+            "username": "polonaamy",
+            "caption": "Free Headband"
+          }
+        },
+        "social-post-2": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_2.jpg?v=1776738637",
+            "aspect_ratio": "9:16",
+            "username": "alexislconway",
+            "caption": "🧴✨ for the crib and one for the gym bag"
+          }
+        },
+        "social-post-3": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_1.jpg?v=1776738623",
+            "aspect_ratio": "3:4",
+            "username": "username3",
+            "caption": "My daily routine"
+          }
+        },
+        "social-post-4": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_2.jpg?v=1776738637",
+            "aspect_ratio": "9:16",
+            "username": "username4",
+            "caption": "Glowing skin starts here"
+          }
+        }
+      },
+      "block_order": [
+        "social-post-1",
+        "social-post-2",
+        "social-post-3",
+        "social-post-4"
+      ]
     }
   },
   "order": [

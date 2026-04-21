@@ -1,52 +1,939 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+{% comment %} 
+                                                                                                            Product Detail Section — sticky image gallery (left) + product info (right) 
+                                                                                                            Layout mirrors the cosmetics product page design with Tailwind CSS v4
 {% endcomment %}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
+<section class="product-section-{{ section.id }} full-width w-full bg-white">
+  <div class="mx-auto px-4 md:px-8 ">
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+    <div class="flex flex-col lg:flex-row justify-between items-start">
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+      {%- comment -%} ===================== LEFT: Sticky Image Gallery ===================== {%- endcomment -%}
+      <div class="w-full bg-cosmetics-cream px-4 sm:px-6 md:px-8 pt-8 sm:pt-12 md:pt-20 lg:pt-40 lg:w-[55%] lg:sticky lg:top-0 self-start">
 
-    <input type="text" name="quantity" min="1" value="1">
+        {%- comment -%} Main image + thumbnails layout {%- endcomment -%}
+        <div class="flex flex-row gap-2 sm:gap-3 md:gap-4">
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+          {%- comment -%} Thumbnail column {%- endcomment -%}
+          <div class="hidden sm:flex flex-col gap-1.5 sm:gap-2 w-[60px] sm:w-[72px] shrink-0">
+            {%- for image in product.images limit: 6 -%}
+              <button
+                type="button"
+                class="product-thumb w-[60px] h-[60px] sm:w-[72px] sm:h-[72px] overflow-hidden border-2 transition-all duration-200 cursor-pointer bg-white {% if forloop.first %}border-cosmetics-dark{% else %}border-transparent hover:border-gray-300{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                aria-label="View image {{ forloop.index }}">
+                {{ image
+ | image_url: width: 150
+ | image_tag:
+ loading: 'lazy',
+ class: 'w-full h-full object-cover',
+ alt: image.alt | default: product.title | escape
+                }}
+              </button>
+            {%- endfor -%}
+          </div>
+
+          {%- comment -%} Main image viewer {%- endcomment -%}
+          <div class="relative flex-1 overflow-hidden justify-center items-center mx-auto flex w-full sm:w-fit">
+            {%- comment -%} Image slides {%- endcomment -%}
+            <div class="product-main-images relative aspect-3/4 w-full sm:w-[350px] md:w-[400px] overflow-hidden">
+              {%- for image in product.images limit: 6 -%}
+                {%- assign img_loading = forloop.first | default: false -%}
+                <div class="product-slide absolute inset-0 transition-opacity duration-400 {% if forloop.first %}opacity-100 z-10{% else %}opacity-0 z-0{% endif %}" data-index="{{ forloop.index0 }}">
+                  {%- if forloop.first -%}
+                    {{ image | image_url: width: 1000 | image_tag: loading: 'eager', widths: '500, 750, 1000', class: 'w-full h-full object-cover object-center', alt: image.alt | default: product.title | escape }}
+                  {%- else -%}
+                    {{ image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '500, 750, 1000', class: 'w-full h-full object-cover object-center', alt: image.alt | default: product.title | escape }}
+                  {%- endif -%}
+                </div>
+              {%- endfor -%}
+
+              {%- comment -%} Prev / Next arrows {%- endcomment -%}
+              {%- if product.images.size > 1 -%}
+                <button
+                  type="button"
+                  class="product-prev absolute left-2 sm:left-3 bottom-3 sm:bottom-4 z-20 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-white/80 hover:bg-white transition-colors duration-200"
+                  aria-label="Previous image">
+                  <svg
+                    width="14"
+                    height="14"
+                    class="sm:w-4 sm:h-4"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M10 3L5 8L10 13"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="product-next absolute right-2 sm:right-3 bottom-3 sm:bottom-4 z-20 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-white/80 hover:bg-white transition-colors duration-200"
+                  aria-label="Next image">
+                  <svg
+                    width="14"
+                    height="14"
+                    class="sm:w-4 sm:h-4"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M6 3L11 8L6 13"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </button>
+
+                {%- comment -%} Counter {%- endcomment -%}
+                <div class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-y-1/2 z-20 flex items-center gap-2 sm:gap-3 pointer-events-none" style="transform: translateX(-50%);">
+                  <span class="product-counter text-[10px] sm:text-xs font-normal text-gray-600 tracking-wide bg-white/80 px-1.5 sm:px-2 py-0.5 sm:py-1">
+                    01 / {{ product.images.size | at_most: 6 | prepend: '0' | slice: -2, 2 }}
+                  </span>
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Mobile thumbnails (dots) {%- endcomment -%}
+            {%- if product.images.size > 1 -%}
+              <div class="flex sm:hidden justify-center gap-1.5 mt-3">
+                {%- for image in product.images limit: 6 -%}
+                  <button
+                    type="button"
+                    class="product-dot w-1.5 h-1.5 rounded-full transition-all duration-200 {% if forloop.first %}bg-cosmetics-dark{% else %}bg-gray-300{% endif %}"
+                    data-index="{{ forloop.index0 }}"
+                    aria-label="Go to image {{ forloop.index }}"></button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+        </div>
+      </div>
+
+      {%- comment -%} ===================== RIGHT: Product Info ===================== {%- endcomment -%}
+      <div class="w-full lg:w-[45%] flex flex-col pt-8 sm:pt-12 md:pt-20 lg:pt-40 mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-32 gap-4 sm:gap-6">
+        <div class="flex flex-col gap-1">
+          {%- comment -%} Category badge + rating {%- endcomment -%}
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            {%- if product.type != blank -%}
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <div class="w-0 h-0 bg-[#241EC6]" style="border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 9px solid; @media (min-width: 640px) { border-left-width: 7px; border-right-width: 7px; border-bottom-width: 12px; }"></div>
+                <span class="text-xs sm:text-sm font-normal tracking-wide text-[#241EC6]">{{ product.type }}</span>
+              </div>
+            {%- else -%}
+              <div></div>
+            {%- endif -%}
+
+            {%- comment -%} Star rating placeholder {%- endcomment -%}
+            {%- if section.settings.show_rating -%}
+              <div class="flex items-center gap-1 sm:gap-1.5">
+                <div class="flex items-center gap-0.5">
+                  {%- for i in (1..5) -%}
+                    <svg
+                      class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#241EC6]"
+                      fill="currentColor"
+                      viewBox="0 0 20 20">
+                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                    </svg>
+                  {%- endfor -%}
+                </div>
+                {%- if section.settings.rating_count != blank -%}
+                  <span class="text-[10px] sm:text-xs text-[#241EC6]">({{ section.settings.rating_count }})</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Title {%- endcomment -%}
+          <div class="flex flex-col gap-2 sm:gap-3">
+            <h1 class="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-normal text-cosmetics-dark leading-[1.1] tracking-tight mb-2 sm:mb-4">
+              {{ product.title }}
+            </h1>
+            {%- if product.description != blank -%}
+              <div class="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed product-description">
+                {{ product.description }}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- comment -%} Tags / attributes row {%- endcomment -%}
+        {%- if product.tags.size > 0 -%}
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            {%- for tag in product.tags limit: 4 -%}
+              <span class="text-[9px] sm:text-[10px] md:text-[11px] font-medium tracking-wider sm:tracking-widest uppercase text-gray-500">
+                {{ tag }}
+                {%- unless forloop.last -%}
+                  <span class="ml-1 sm:ml-2 text-gray-300">—</span>
+                {%- endunless -%}
+              </span>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Product form {%- endcomment -%}
+        {% form 'product'
+          , product
+          , id: 'product-form'
+          , data-product-form: ''
+          , data-ajax-cart: '' %}
+
+          {%- comment -%} Variant selector {%- endcomment -%}
+          {%- if product.variants.size > 1 -%}
+            <div class="flex flex-col gap-2 sm:gap-3">
+              {%- for option in product.options_with_values -%}
+                <div class="flex flex-col gap-1.5 sm:gap-2">
+                  <div class="flex items-center justify-between border-b border-cosmetics-dark pb-1.5 sm:pb-2">
+                    <span class="text-[10px] sm:text-xs font-medium tracking-[0.08em] uppercase text-cosmetics-dark">{{ option.name }}</span>
+                    <span class="text-[10px] sm:text-xs text-gray-500 product-selected-option" data-option-index="{{ forloop.index0 }}">
+                      {{ current_variant.options[forloop.index0] }}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                    {%- for value in option.values -%}
+                      <button
+                        type="button"
+                        class="product-option-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-medium tracking-wide border transition-all duration-200 {% if current_variant.options[forloop.index0] == value %}border-cosmetics-dark bg-cosmetics-dark text-white{% else %}border-gray-300 bg-white text-gray-700 hover:border-cosmetics-dark{% endif %}"
+                        data-option-index="{{ forloop.index0 }}"
+                        data-option-value="{{ value | escape }}">
+                        {{ value }}
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} Hidden variant ID input {%- endcomment -%}
+          <input
+            type="hidden"
+            name="id"
+            id="product-variant-id"
+            value="{{ current_variant.id }}">
+
+          {%- comment -%} Quantity + Add to cart {%- endcomment -%}
+          <div class="flex flex-col gap-2 sm:gap-3">
+            {%- comment -%} Add to cart button {%- endcomment -%}
+            <button
+              type="submit"
+              name="add"
+              id="product-add-to-cart"
+              class="w-full h-11 sm:h-12 bg-[#241EC6] text-white text-xs sm:text-sm font-medium tracking-[0.08em] uppercase transition-all duration-200 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              {%- unless current_variant.available -%}
+              disabled{%- endunless -%}>
+              {%- if current_variant.available -%}
+                ADD TO BAG — {{ current_variant.price | money }}
+              {%- else -%}
+                SOLD OUT
+              {%- endif -%}
+            </button>
+          </div>
+
+        {% endform %}
+
+        {%- comment -%} ===================== Accordion sections ===================== {%- endcomment -%}
+        <div class="flex flex-col border-t border-gray-200 mt-1 sm:mt-2">
+
+          {%- if section.settings.benefits != blank -%}
+            <div class="product-accordion border-b border-gray-200">
+              <button
+                type="button"
+                class="accordion-trigger w-full flex items-center justify-between py-3 sm:py-4 text-[10px] sm:text-xs font-medium tracking-[0.1em] uppercase text-cosmetics-dark hover:text-gray-600 transition-colors duration-200"
+                aria-expanded="false">
+                <span>Benefits</span>
+                <svg
+                  class="accordion-icon w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300"
+                  viewBox="0 0 16 16"
+                  fill="none">
+                  <path
+                    d="M3 6L8 11L13 6"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div class="accordion-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+                <div class="pb-3 sm:pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  {{ section.settings.benefits }}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.how_to_use != blank -%}
+            <div class="product-accordion border-b border-gray-200">
+              <button
+                type="button"
+                class="accordion-trigger w-full flex items-center justify-between py-3 sm:py-4 text-[10px] sm:text-xs font-medium tracking-[0.1em] uppercase text-cosmetics-dark hover:text-gray-600 transition-colors duration-200"
+                aria-expanded="false">
+                <span>How To Use</span>
+                <svg
+                  class="accordion-icon w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300"
+                  viewBox="0 0 16 16"
+                  fill="none">
+                  <path
+                    d="M3 6L8 11L13 6"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div class="accordion-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+                <div class="pb-3 sm:pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  {{ section.settings.how_to_use }}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.key_ingredients != blank -%}
+            <div class="product-accordion border-b border-gray-200">
+              <button
+                type="button"
+                class="accordion-trigger w-full flex items-center justify-between py-3 sm:py-4 text-[10px] sm:text-xs font-medium tracking-[0.1em] uppercase text-cosmetics-dark hover:text-gray-600 transition-colors duration-200"
+                aria-expanded="false">
+                <span>Key Ingredients</span>
+                <svg
+                  class="accordion-icon w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300"
+                  viewBox="0 0 16 16"
+                  fill="none">
+                  <path
+                    d="M3 6L8 11L13 6"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div class="accordion-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+                <div class="pb-3 sm:pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  {{ section.settings.key_ingredients }}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+        </div>
+
+        {%- comment -%} ===================== Complete The Routine Section ===================== {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          <div class="w-full">
+            <h2 class="font-sans text-sm sm:text-base font-semibold text-cosmetics-dark pb-2 sm:pb-3">
+              {{ section.settings.routine_heading | default: 'Complete The Routine' }}
+            </h2>
+
+            <div class="flex flex-col gap-3 sm:gap-4 bg-cosmetics-cream p-3 sm:p-4 rounded-md">
+              {%- for block in section.blocks -%}
+                {%- assign routine_product = all_products[block.settings.product] -%}
+
+                  <div {{ block.shopify_attributes }} class="flex items-center gap-2 sm:gap-3 md:gap-4 p-2 bg-[#f5f5f0] transition-colors duration-200">
+
+                  {%- comment -%} Product Image {%- endcomment -%}
+                  <div class="size-12 sm:size-14 shrink-0 bg-white flex items-center justify-center overflow-hidden">
+                    {%- if routine_product != blank -%}
+                      <a href="{{ routine_product.url }}" class="block w-full h-full">
+                        {% if routine_product.featured_image %}
+                          {{ routine_product.featured_image
+ | image_url: width: 200
+ | image_tag:
+ loading: 'lazy',
+ class: 'w-full h-full object-contain',
+ alt: routine_product.featured_image.alt | default: routine_product.title | escape
+                          }}
+                        {% else %}
+                          <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-400 text-xs">No image</span>
+                          </div>
+                        {% endif %}
+                      </a>
+                    {%- elsif block.settings.product_image -%}
+                      {{ block.settings.product_image
+ | image_url: width: 200
+ | image_tag:
+ loading: 'lazy',
+ class: 'w-full h-full object-contain',
+ alt: block.settings.product_title | escape
+                      }}
+                    {%- else -%}
+                      <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-400 text-xs">No image</span>
+                      </div>
+                    {%- endif -%}
+                  </div>
+
+                  {%- comment -%} Product Info {%- endcomment -%}
+                  <div class="flex-1 flex flex-col gap-1.5 sm:gap-2">
+                    <div class="flex-1 flex flex-col gap-0.5 sm:gap-1">
+                      <h3 class="text-sm sm:text-base font-normal text-cosmetics-dark leading-tight">
+                        {%- if routine_product != blank -%}
+                          <a href="{{ routine_product.url }}" class="hover:opacity-70 transition-opacity duration-200">
+                            {{ routine_product.title }}
+                          </a>
+                        {%- else -%}
+                          {{ block.settings.product_title | default: 'Product Title' }}
+                        {%- endif -%}
+                      </h3>
+                    </div>
+
+                    {%- comment -%} Price {%- endcomment -%}
+                    <div class="text-sm sm:text-base font-normal text-cosmetics-dark shrink-0">
+                      {%- if routine_product != blank -%}
+                        {{ routine_product.price | money_without_trailing_zeros }}
+                      {%- else -%}
+                        {{ block.settings.product_price | default: '$0.00' }}
+                      {%- endif -%}
+                    </div>
+                  </div>
+
+                  {%- comment -%} Add to Cart Button {%- endcomment -%}
+                  <div class="flex flex-row justify-end items-end">
+                    <div class="shrink-0">
+                      {%- if routine_product != blank and routine_product.available -%}
+                        <button
+                          type="button"
+                          class="routine-add-to-cart w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white hover:bg-cosmetics-dark hover:text-white transition-all duration-200 border border-gray-300"
+                          data-variant-id="{{ routine_product.selected_or_first_available_variant.id }}"
+                          aria-label="Add {{ routine_product.title | escape }} to cart">
+                          <span class="w-4 h-4 sm:w-5 sm:h-5">{% render 'icon-cart' %}</span>
+                        </button>
+                      {%- else -%}
+                        <button
+                          type="button"
+                          class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white border border-gray-300 opacity-50 cursor-not-allowed"
+                          disabled
+                          aria-label="Product unavailable">
+                          <span class="w-4 h-4 sm:w-5 sm:h-5">{% render 'icon-cart' %}</span>
+                        </button>
+                      {%- endif -%}
+                    </div>
+                  </div>
+
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- comment -%} END RIGHT {%- endcomment -%}
+
+    </div>
+
+
+  </div>
+
+  {%- comment -%} ===================== Related Products Grid ===================== {%- endcomment -%}
+  {% if section.settings.show_related_products %}
+    <div class="related-products w-full flex flex-row justify-center items-start px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-12 md:py-16 bg-white">
+
+      <h2 class="related-products__title font-serif font-normal max-w-[200px] text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#241EC6] text-center pb-6 sm:pb-8 ">
+        {{ section.settings.related_heading | default: 'You May Also Like' }}
+      </h2>
+
+      {%- comment -%} Get ALL products from the store {%- endcomment -%}
+      {%- liquid
+        assign product_limit = 12
+        assign related_products = collections.all.products
+      -%}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 justify-center items-center w-full max-w-7xl mx-auto">
+        {%- assign count = 0 -%}
+
+        {%- comment -%} Empty first column on desktop {%- endcomment -%}
+        <div class="hidden lg:block"></div>
+
+        {% for related_product in related_products limit: 12 %}
+          {%- if related_product.id != product.id and count < product_limit -%}
+            {%- assign count = count | plus: 1 -%}
+
+              <div class="related-product bg-white overflow-hidden transition-all duration-300 group w-full">
+
+              {%- comment -%} Image container with add-to-cart button {%- endcomment -%}
+              <div class="relative aspect-3/4 bg-cosmetics-cream overflow-hidden">
+                <a
+                  href="{{ related_product.url }}"
+                  class="block w-full h-full"
+                  aria-label="{{ related_product.title | escape }}">
+                  {% if related_product.featured_image %}
+                    {{ related_product.featured_image
+ | image_url: width: 800
+ | image_tag:
+ loading: 'lazy',
+ widths: '400, 600, 800',
+ class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700',
+ alt: related_product.featured_image.alt | default: related_product.title | escape
+                    }}
+                  {% else %}
+                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span class="text-gray-400 text-sm">No image</span>
+                    </div>
+                  {% endif %}
+                </a>
+
+                {%- comment -%} Category badge — top left {%- endcomment -%}
+                {% if related_product.type != blank %}
+                  <div class="absolute top-2 left-2 sm:top-4 sm:left-4 flex items-center gap-1.5 sm:gap-2">
+                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0 bg-[#241EC6]"></div>
+                    <span class="text-xs sm:text-sm font-medium tracking-wide text-[#241EC6] uppercase">
+                      {{ related_product.type }}
+                    </span>
+                  </div>
+                {% endif %}
+
+                {%- comment -%} Add to cart button — bottom right {%- endcomment -%}
+                <div class="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    type="button"
+                    onclick="window.location.href='{{ related_product.url }}'"
+                    class="w-10 h-10 sm:w-12 sm:h-12 bg-white flex items-center justify-center hover:bg-[#241EC6] transition-colors duration-200 shadow-lg group/btn"
+                    aria-label="View {{ related_product.title | escape }}"
+                    data-product-id="{{ related_product.variants.first.id }}">
+                    <span class="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 group-hover/btn:text-white transition-colors duration-200">{% render 'icon-cart' %}</span>
+                  </button>
+                </div>
+              </div>
+
+              {%- comment -%} Product info {%- endcomment -%}
+              <div class="p-3 sm:p-4 md:p-6 flex flex-col gap-2 sm:gap-3 md:gap-4">
+                <div class="flex flex-col gap-1.5 sm:gap-2">
+                  <h3 class="text-base sm:text-lg font-medium text-gray-900 leading-tight">
+                    <a href="{{ related_product.url }}" class="hover:text-[#241EC6] transition-colors duration-200">
+                      {{ related_product.title | escape }}
+                    </a>
+                  </h3>
+                  {% if related_product.description != blank %}
+                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-2">
+                      {{ related_product.description | strip_html | truncate: 100 }}
+                    </p>
+                  {% endif %}
+                </div>
+
+                <div class="flex flex-row justify-between items-center pt-1.5 sm:pt-2 border-t border-gray-100">
+                  {%- comment -%} Rating stars placeholder {%- endcomment -%}
+                  {% if section.settings.show_related_rating %}
+                    <div class="flex items-center gap-0.5 sm:gap-1">
+                      <div class="flex items-center gap-0.5">
+                        {% for i in (1..5) %}
+                          <svg
+                            class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#241EC6]"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                          </svg>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endif %}
+
+                  {%- comment -%} Price {%- endcomment -%}
+                  <div class="text-base sm:text-lg font-semibold text-[#241EC6]">
+                    {{ related_product.price | money_without_trailing_zeros }}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          {%- endif -%}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+</section>
+
+<script>
+  (function () {
+  'use strict';
+  
+  if (typeof gsap === 'undefined') {
+    console.warn('GSAP not loaded');
+  }
+  
+  const section = document.querySelector('.product-section-{{ section.id }}');
+  if (!section) return;
+  
+  // ── Image gallery ──────────────────────────────────────────────
+  const slides     = section.querySelectorAll('.product-slide');
+  const thumbs     = section.querySelectorAll('.product-thumb');
+  const dots       = section.querySelectorAll('.product-dot');
+  const counter    = section.querySelector('.product-counter');
+  const prevBtn    = section.querySelector('.product-prev');
+  const nextBtn    = section.querySelector('.product-next');
+  let current      = 0;
+  const total      = slides.length;
+  
+  function pad(n) { return String(n + 1).padStart(2, '0'); }
+  
+  function goTo(index) {
+    slides[current].classList.remove('opacity-100', 'z-10');
+    slides[current].classList.add('opacity-0', 'z-0');
+    if (thumbs[current]) {
+      thumbs[current].classList.remove('border-cosmetics-dark');
+      thumbs[current].classList.add('border-transparent');
+    }
+    if (dots[current]) {
+      dots[current].classList.remove('bg-cosmetics-dark');
+      dots[current].classList.add('bg-gray-300');
+    }
+  
+    current = (index + total) % total;
+  
+    slides[current].classList.remove('opacity-0', 'z-0');
+    slides[current].classList.add('opacity-100', 'z-10');
+    if (thumbs[current]) {
+      thumbs[current].classList.remove('border-transparent');
+      thumbs[current].classList.add('border-cosmetics-dark');
+    }
+    if (dots[current]) {
+      dots[current].classList.remove('bg-gray-300');
+      dots[current].classList.add('bg-cosmetics-dark');
+    }
+    if (counter) counter.textContent = pad(current) + ' / ' + pad(total - 1);
+  }
+  
+  thumbs.forEach(function (thumb) {
+    thumb.addEventListener('click', function () { goTo(parseInt(this.dataset.index, 10)); });
+  });
+  dots.forEach(function (dot) {
+    dot.addEventListener('click', function () { goTo(parseInt(this.dataset.index, 10)); });
+  });
+  if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1); });
+  
+  // ── Variant selection ──────────────────────────────────────────
+  const productData = {{ product.variants | json }};
+  const optionBtns  = section.querySelectorAll('.product-option-btn');
+  const variantInput = section.querySelector('#product-variant-id');
+  const priceEl      = section.querySelector('.product-price');
+  const addBtn       = section.querySelector('[name="add"]');
+  const selectedLabels = section.querySelectorAll('.product-selected-option');
+  
+  // Track selected options
+  const selectedOptions = [];
+  {%- for option in product.options_with_values -%}
+    selectedOptions[{{ forloop.index0 }}] = {{ current_variant.options[forloop.index0] | json }};
+  {%- endfor -%}
+  
+  function findVariant() {
+    return productData.find(function (v) {
+      return v.options.every(function (opt, i) { return opt === selectedOptions[i]; });
+    });
+  }
+  
+  function updateVariant() {
+    const variant = findVariant();
+    if (!variant) return;
+  
+    variantInput.value = variant.id;
+  
+    if (priceEl) {
+      priceEl.textContent = formatMoney(variant.price);
+    }
+  
+    if (addBtn) {
+      if (variant.available) {
+        addBtn.disabled = false;
+        addBtn.textContent = 'ADD TO BAG — ' + formatMoney(variant.price);
+      } else {
+        addBtn.disabled = true;
+        addBtn.textContent = 'SOLD OUT';
+      }
+    }
+  }
+  
+  function formatMoney(cents) {
+    return (cents / 100).toLocaleString('en-US', { style: 'currency', currency: '{{ shop.currency }}' });
+  }
+  
+  optionBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const idx = parseInt(this.dataset.optionIndex, 10);
+      const val = this.dataset.optionValue;
+  
+      selectedOptions[idx] = val;
+  
+      // Update button active states for this option group
+      section.querySelectorAll('.product-option-btn[data-option-index="' + idx + '"]').forEach(function (b) {
+        if (b.dataset.optionValue === val) {
+          b.classList.add('border-cosmetics-dark', 'bg-cosmetics-dark', 'text-white');
+          b.classList.remove('border-gray-300', 'bg-white', 'text-gray-700');
+        } else {
+          b.classList.remove('border-cosmetics-dark', 'bg-cosmetics-dark', 'text-white');
+          b.classList.add('border-gray-300', 'bg-white', 'text-gray-700');
+        }
+      });
+  
+      // Update label
+      if (selectedLabels[idx]) selectedLabels[idx].textContent = val;
+  
+      updateVariant();
+    });
+  });
+  
+  // ── Quantity stepper ───────────────────────────────────────────
+  const qtyInput = section.querySelector('#product-quantity');
+  const qtyMinus = section.querySelector('.qty-minus');
+  const qtyPlus  = section.querySelector('.qty-plus');
+  
+  if (qtyMinus && qtyPlus && qtyInput) {
+    qtyMinus.addEventListener('click', function () {
+      const v = parseInt(qtyInput.value, 10);
+      if (v > 1) qtyInput.value = v - 1;
+    });
+    qtyPlus.addEventListener('click', function () {
+      qtyInput.value = parseInt(qtyInput.value, 10) + 1;
+    });
+  }
+  
+  // ── Accordion ─────────────────────────────────────────────────
+  section.querySelectorAll('.product-accordion').forEach(function (acc) {
+    const trigger = acc.querySelector('.accordion-trigger');
+    const content = acc.querySelector('.accordion-content');
+    const icon    = acc.querySelector('.accordion-icon');
+  
+    trigger.addEventListener('click', function () {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+  
+      if (isOpen) {
+        content.style.maxHeight = '0';
+        trigger.setAttribute('aria-expanded', 'false');
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        trigger.setAttribute('aria-expanded', 'true');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    });
+  });
+  
+  // ── Complete The Routine - Add to Cart ────────────────────────
+  const routineAddBtns = section.querySelectorAll('.routine-add-to-cart');
+  
+  routineAddBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const variantId = this.dataset.variantId;
+      if (!variantId) return;
+      
+      // Disable button and show loading state
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+      
+      // Add to cart via Shopify Cart API
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: 1
+        })
+      })
+      .then(function (response) { return response.json(); })
+      .then(function (data) {
+        // Success - trigger cart drawer
+        console.log('Added to cart:', data);
+        
+        // Re-enable button
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+        
+        // Dispatch custom event for cart update
+        document.dispatchEvent(new CustomEvent('cart:updated'));
+      })
+      .catch(function (error) {
+        console.error('Error adding to cart:', error);
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+      });
+    });
+  });
+  
+  // ── Main Product Form - Add to Cart ────────────────────────────
+  const productForm = section.querySelector('#product-form');
+  
+  if (productForm) {
+    productForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      
+      const formData = new FormData(productForm);
+      const addBtn = productForm.querySelector('[name="add"]');
+      
+      // Disable button and show loading state
+      if (addBtn) {
+        addBtn.disabled = true;
+        addBtn.classList.add('opacity-50');
+        const originalText = addBtn.textContent;
+        addBtn.textContent = 'ADDING...';
+        
+        // Add to cart via Shopify Cart API
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: formData.get('id'),
+            quantity: parseInt(formData.get('quantity') || '1', 10)
+          })
+        })
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+          // Success - trigger cart drawer
+          console.log('Added to cart:', data);
+          
+          // Re-enable button
+          addBtn.disabled = false;
+          addBtn.classList.remove('opacity-50');
+          addBtn.textContent = originalText;
+          
+          // Dispatch custom event to open cart drawer
+          document.dispatchEvent(new CustomEvent('cart:add'));
+        })
+        .catch(function (error) {
+          console.error('Error adding to cart:', error);
+          addBtn.disabled = false;
+          addBtn.classList.remove('opacity-50');
+          addBtn.textContent = originalText;
+          alert('Error adding to cart. Please try again.');
+        });
+      }
+    });
+  }
+  
+  
+  })();
+</script>
 
 {% schema %}
-{
-  "name": "t:general.product",
-  "settings": [],
-  "disabled_on": {
-    "groups": ["header", "footer"]
+  {
+    "name": "t:general.product",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_rating",
+        "label": "Show Rating Stars",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "rating_count",
+        "label": "Rating Count",
+        "default": "38",
+        "info": "Number shown next to stars"
+      },
+      {
+        "type": "header",
+        "content": "Accordion Content"
+      },
+      {
+        "type": "richtext",
+        "id": "benefits",
+        "label": "Benefits",
+        "default": "<p>Deeply cleanses while maintaining the skin's natural moisture barrier. Suitable for all skin types.</p>"
+      }, {
+        "type": "richtext",
+        "id": "how_to_use",
+        "label": "How To Use",
+        "default": "<p>Apply a small amount to damp skin, massage gently in circular motions, then rinse thoroughly with lukewarm water.</p>"
+      }, {
+        "type": "richtext",
+        "id": "key_ingredients",
+        "label": "Key Ingredients",
+        "default": "<p>TFC5™ Technology, Hyaluronic Acid, Niacinamide, Ceramides.</p>"
+      }, {
+        "type": "header",
+        "content": "Complete The Routine"
+      }, {
+        "type": "text",
+        "id": "routine_heading",
+        "label": "Routine Section Heading",
+        "default": "Complete The Routine",
+        "info": "Heading for recommended products section"
+      }, {
+        "type": "header",
+        "content": "Related Products Grid"
+      }, {
+        "type": "checkbox",
+        "id": "show_related_products",
+        "label": "Show Related Products",
+        "default": true,
+        "info": "Display a grid of related products below the main product"
+      }, {
+        "type": "text",
+        "id": "related_heading",
+        "label": "Related Products Heading",
+        "default": "You May Also Like"
+      }, {
+        "type": "collection",
+        "id": "related_collection",
+        "label": "Related Products Collection",
+        "info": "Optional: Select a specific collection. If empty, products from the same collection as the current product will be shown."
+      }, {
+        "type": "range",
+        "id": "products_to_show",
+        "label": "Number of Products to Show",
+        "min": 2,
+        "max": 12,
+        "step": 1,
+        "default": 4
+      }, {
+        "type": "checkbox",
+        "id": "show_related_rating",
+        "label": "Show Rating Stars on Related Products",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "routine_product",
+        "name": "Routine Product",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Product",
+            "info": "Select a product to recommend"
+          },
+          {
+            "type": "header",
+            "content": "Manual Override (when no product selected)"
+          },
+          {
+            "type": "image_picker",
+            "id": "product_image",
+            "label": "Product Image"
+          },
+          {
+            "type": "text",
+            "id": "product_title",
+            "label": "Product Title",
+            "default": "Renewal Cream"
+          }, {
+            "type": "textarea",
+            "id": "product_description",
+            "label": "Product Description",
+            "default": "Smoothing, strengthening daily moisturizer"
+          }, {
+            "type": "text",
+            "id": "product_price",
+            "label": "Price",
+            "default": "$75.00"
+          }
+        ]
+      }
+    ],
+    "disabled_on": {
+      "groups": ["header", "footer"]
+    }
   }
-}
 {% endschema %}

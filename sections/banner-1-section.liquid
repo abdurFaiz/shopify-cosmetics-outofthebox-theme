@@ -1,10 +1,10 @@
 {% comment %} 
-          Banner 1 Section — TFC5™ Science Banner 
-          Full-viewport hero: hardcoded CDN background, eyebrow, heading, badge, body copy, CTA. 
-          Styled with Tailwind CSS v4.
+                Banner 1 Section — TFC5™ Science Banner 
+                Full-viewport hero: hardcoded CDN background, eyebrow, heading, badge, body copy, CTA. 
+                Styled with Tailwind CSS v4.
 {% endcomment %}
 
-<section class="full-width relative w-full min-h-screen overflow-hidden flex flex-col">
+<section class="banner-1-section-{{ section.id }} full-width relative w-full min-h-screen overflow-hidden flex flex-col">
 
   {{- '<!-- Background image -->' }}
   <div class="absolute inset-0 z-0">
@@ -118,6 +118,113 @@
   </div>
 
 </section>
+
+<script>
+  (function() {
+  'use strict';
+  
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  
+  gsap.registerPlugin(ScrollTrigger);
+  
+  const section = document.querySelector('.banner-1-section-{{ section.id }}');
+  if (!section) return;
+  
+  const mm = gsap.matchMedia();
+  
+  mm.add({
+    isDesktop: '(min-width: 1024px)',
+    isTablet: '(min-width: 768px) and (max-width: 1023px)',
+    isMobile: '(max-width: 767px)',
+    reduceMotion: '(prefers-reduced-motion: reduce)'
+  }, (context) => {
+    const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+    
+    const xDistance = isMobile ? -30 : isTablet ? -40 : -50;
+    const duration = reduceMotion ? 0 : (isMobile ? 0.7 : 1);
+    
+    // Fade in eyebrow and heading from left
+    const headingGroup = section.querySelector('.flex.flex-col.gap-2\\.5');
+    if (headingGroup) {
+      gsap.from(headingGroup, {
+        opacity: reduceMotion ? 1 : 0,
+        x: reduceMotion ? 0 : xDistance,
+        duration: duration,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: section,
+          start: isMobile ? 'top 75%' : 'top 70%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Fade in badge
+    const badge = section.querySelector('.shrink-0');
+    if (badge) {
+      gsap.from(badge, {
+        opacity: reduceMotion ? 1 : 0,
+        scale: reduceMotion ? 1 : 0.8,
+        duration: reduceMotion ? 0 : 0.8,
+        ease: reduceMotion ? 'none' : 'back.out(1.7)',
+        scrollTrigger: {
+          trigger: badge,
+          start: isMobile ? 'top 85%' : 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Fade in body text
+    const bodyText = section.querySelector('.text-white\\/88');
+    if (bodyText) {
+      gsap.from(bodyText, {
+        opacity: reduceMotion ? 1 : 0,
+        y: reduceMotion ? 0 : (isMobile ? 20 : 30),
+        duration: reduceMotion ? 0 : 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: bodyText,
+          start: isMobile ? 'top 85%' : 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Fade in CTA button
+    const ctaBtn = section.querySelector('a.inline-block');
+    if (ctaBtn) {
+      gsap.from(ctaBtn, {
+        opacity: reduceMotion ? 1 : 0,
+        y: reduceMotion ? 0 : 20,
+        duration: reduceMotion ? 0 : 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: ctaBtn,
+          start: isMobile ? 'top 90%' : 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Parallax background image (disabled on mobile and reduced motion)
+    const bgImg = section.querySelector('.absolute.inset-0 img');
+    if (bgImg && !isMobile && !reduceMotion) {
+      gsap.to(bgImg, {
+        y: isTablet ? 60 : 100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+    }
+  });
+  
+  })();
+</script>
 
 {% schema %}
   {

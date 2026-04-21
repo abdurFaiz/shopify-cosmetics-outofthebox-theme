@@ -1,0 +1,448 @@
+{% comment %} 
+    Cart Drawer - Slides in from right when item is added to cart 
+    Matches the cosmetics theme design with Tailwind CSS
+{% endcomment %}
+
+{%- comment -%} Cart Drawer Overlay {%- endcomment -%}
+<div
+  id="cart-drawer-overlay"
+  class="fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300"
+  style="z-index: 10000;"
+  aria-hidden="true"></div>
+
+{%- comment -%} Cart Drawer {%- endcomment -%}
+<div
+  id="cart-drawer"
+  class="fixed top-0 right-0 h-full w-full md:w-[500px] bg-white transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col"
+  style="z-index: 10001;"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cart-drawer-title">
+
+  {%- comment -%} Header {%- endcomment -%}
+  <div class="flex items-start justify-between p-6 ">
+    <div class="flex flex-col gap-2">
+      <h2 id="cart-drawer-title" class="font-serif text-3xl md:text-4xl font-normal text-cosmetics-dark">
+        My Bag<sup class="text-lg align-super" id="cart-count">{{ cart.item_count }}</sup>
+      </h2>
+      {%- comment -%} Free Shipping Progress Bar {%- endcomment -%}
+      <div class="flex flex-col gap-2 w-full max-w-md">
+      
+        <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+   
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      id="cart-drawer-close"
+      class="text-cosmetics-dark hover:text-gray-600 transition-colors duration-200 -mt-1"
+      aria-label="Close cart">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+        <line
+          x1="18"
+          y1="6"
+          x2="6"
+          y2="18"></line>
+        <line
+          x1="6"
+          y1="6"
+          x2="18"
+          y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  {%- comment -%} Cart Items {%- endcomment -%}
+  <div class="flex-1 overflow-y-auto p-6" id="cart-items-container">
+    {%- if cart.item_count > 0 -%}
+      <div class="flex flex-col gap-4" id="cart-items">
+        {%- for item in cart.items -%}
+          <div class="flex items-start gap-4 pb-4 border-b border-gray-100" data-cart-item="{{ item.key }}">
+            {%- comment -%} Product Image {%- endcomment -%}
+            <div class="w-20 h-24 shrink-0 bg-cosmetics-cream overflow-hidden">
+              {%- if item.image -%}
+                <img
+                  src="{{ item.image | image_url: width: 200 }}"
+                  alt="{{ item.image.alt | default: item.product.title | escape }}"
+                  class="w-full h-full object-cover"
+                  loading="lazy">
+              {%- else -%}
+                <div class="w-full h-full bg-gray-200"></div>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Product Info {%- endcomment -%}
+            <div class="flex-1 flex flex-col gap-2">
+              <h3 class="text-base font-normal text-cosmetics-dark">
+                {{ item.product.title }}
+              </h3>
+              {%- if item.variant.title != 'Default Title' -%}
+                <p class="text-xs text-gray-500">{{ item.variant.title }}</p>
+              {%- endif -%}
+
+              {%- comment -%} Quantity Controls {%- endcomment -%}
+              <div class="flex items-center gap-3 mt-2">
+                <div class="flex items-center border border-gray-300">
+                  <button
+                    type="button"
+                    class="cart-qty-btn w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200"
+                    data-action="decrease"
+                    data-key="{{ item.key }}"
+                    aria-label="Decrease quantity">
+                    <svg
+                      width="12"
+                      height="2"
+                      viewBox="0 0 12 2"
+                      fill="none">
+                      <path
+                        d="M0 1H12"
+                        stroke="currentColor"
+                        stroke-width="1.5" />
+                    </svg>
+                  </button>
+                  <input
+                    type="number"
+                    class="w-12 h-8 text-center text-sm border-x border-gray-300 focus:outline-none"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    data-key="{{ item.key }}"
+                    aria-label="Quantity">
+                  <button
+                    type="button"
+                    class="cart-qty-btn w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200"
+                    data-action="increase"
+                    data-key="{{ item.key }}"
+                    aria-label="Increase quantity">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none">
+                      <path
+                        d="M6 0V12M0 6H12"
+                        stroke="currentColor"
+                        stroke-width="1.5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {%- comment -%} Price {%- endcomment -%}
+            <div class="text-right">
+              <p class="text-base font-normal text-cosmetics-dark">
+                {{ item.final_line_price | money }}
+              </p>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="flex flex-col items-center justify-center h-full text-center">
+        <p class="text-gray-500 text-base">Your bag is empty</p>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Complete Your Routine Section {%- endcomment -%}
+    <div class="mt-8" id="cart-recommendations">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-sans text-lg font-normal text-cosmetics-dark">
+          Complete Your Routine
+        </h3>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            class="recommendation-nav w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+            data-direction="prev"
+            aria-label="Previous recommendations">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none">
+              <path
+                d="M10 3L5 8L10 13"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="recommendation-nav w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+            data-direction="next"
+            aria-label="Next recommendations">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none">
+              <path
+                d="M6 3L11 8L6 13"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {%- comment -%} Recommendation Cards {%- endcomment -%}
+      <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide" id="recommendations-container">
+        {%- comment -%} These will be populated dynamically or via product recommendations {%- endcomment -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Footer with Subtotal and Checkout {%- endcomment -%}
+  <div class="border-t border-gray-200 p-6 bg-white">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-lg font-normal text-cosmetics-dark">Subtotal</span>
+      <span class="text-2xl font-normal text-cosmetics-dark" id="cart-subtotal">
+        {{ cart.total_price | money }}
+      </span>
+    </div>
+    <button
+      type="button"
+      id="cart-checkout-btn"
+      class="w-full h-14 bg-[#241EC6] text-white text-sm font-medium tracking-[0.08em] uppercase transition-all duration-200 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+      onclick="window.location.href='/checkout'">
+      CHECKOUT SECURELY
+    </button>
+    <p class="text-xs text-gray-500 text-center mt-3">
+      Taxes and shipping calculated at checkout
+    </p>
+  </div>
+</div>
+
+<style>
+  /* Hide scrollbar for recommendations */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Prevent body scroll when drawer is open */
+  body.cart-drawer-open {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  (function() {
+  'use strict';
+  
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-drawer-overlay');
+  const closeBtn = document.getElementById('cart-drawer-close');
+  const cartCount = document.getElementById('cart-count');
+  const cartSubtotal = document.getElementById('cart-subtotal');
+  const cartItemsContainer = document.getElementById('cart-items');
+  const shippingProgress = document.getElementById('shipping-progress');
+  const shippingMessage = document.getElementById('shipping-message');
+  
+  // Free shipping threshold (in cents)
+  const FREE_SHIPPING_THRESHOLD = 10000; // $100.00
+  
+  // Open drawer
+  function openDrawer() {
+    drawer.classList.remove('translate-x-full');
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.classList.add('cart-drawer-open');
+    drawer.setAttribute('aria-hidden', 'false');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  
+  // Close drawer
+  function closeDrawer() {
+    drawer.classList.add('translate-x-full');
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    document.body.classList.remove('cart-drawer-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  
+  // Update shipping progress
+  function updateShippingProgress(totalPrice) {
+    const progress = Math.min((totalPrice / FREE_SHIPPING_THRESHOLD) * 100, 100);
+    shippingProgress.style.width = progress + '%';
+  
+    if (totalPrice >= FREE_SHIPPING_THRESHOLD) {
+      shippingMessage.textContent = "You've unlocked Free Shipping!";
+    } else {
+      const remaining = FREE_SHIPPING_THRESHOLD - totalPrice;
+      const remainingFormatted = formatMoney(remaining);
+      shippingMessage.textContent = 'Add ' + remainingFormatted + ' more for Free Shipping';
+    }
+  }
+  
+  // Format money
+  function formatMoney(cents) {
+    return (cents / 100).toLocaleString('en-US', {
+      style: 'currency',
+      currency: '{{ cart.currency.iso_code }}'
+    });
+  }
+  
+  // Fetch and update cart
+  function updateCart() {
+    fetch('/cart.js')
+      .then(function(response) { return response.json(); })
+      .then(function(cart) {
+        cartCount.textContent = cart.item_count;
+        cartSubtotal.textContent = formatMoney(cart.total_price);
+        updateShippingProgress(cart.total_price);
+        renderCartItems(cart.items);
+      })
+      .catch(function(error) {
+        console.error('Error updating cart:', error);
+      });
+  }
+  
+  // Render cart items
+  function renderCartItems(items) {
+    if (!cartItemsContainer) return;
+  
+    if (items.length === 0) {
+      cartItemsContainer.innerHTML = '<div class="flex flex-col items-center justify-center h-full text-center"><p class="text-gray-500 text-base">Your bag is empty</p></div>';
+      return;
+    }
+  
+    let html = '';
+    items.forEach(function(item) {
+      const imageUrl = item.image ? item.image : '';
+      const variantTitle = item.variant_title !== 'Default Title' ? '<p class="text-xs text-gray-500">' + item.variant_title + '</p>' : '';
+  
+      html += '<div class="flex items-start gap-4 pb-4 border-b border-gray-100" data-cart-item="' + item.key + '">';
+      html += '  <div class="w-20 h-24 shrink-0 bg-cosmetics-cream overflow-hidden">';
+      if (imageUrl) {
+        html += '    <img src="' + imageUrl + '" alt="' + item.product_title + '" class="w-full h-full object-cover" loading="lazy">';
+      } else {
+        html += '    <div class="w-full h-full bg-gray-200"></div>';
+      }
+      html += '  </div>';
+      html += '  <div class="flex-1 flex flex-col gap-2">';
+      html += '    <h3 class="text-base font-normal text-cosmetics-dark">' + item.product_title + '</h3>';
+      html += variantTitle;
+      html += '    <div class="flex items-center gap-3 mt-2">';
+      html += '      <div class="flex items-center border border-gray-300">';
+      html += '        <button type="button" class="cart-qty-btn w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200" data-action="decrease" data-key="' + item.key + '" aria-label="Decrease quantity">';
+      html += '          <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M0 1H12" stroke="currentColor" stroke-width="1.5"/></svg>';
+      html += '        </button>';
+      html += '        <input type="number" class="w-12 h-8 text-center text-sm border-x border-gray-300 focus:outline-none" value="' + item.quantity + '" min="0" data-key="' + item.key + '" aria-label="Quantity">';
+      html += '        <button type="button" class="cart-qty-btn w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200" data-action="increase" data-key="' + item.key + '" aria-label="Increase quantity">';
+      html += '          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0V12M0 6H12" stroke="currentColor" stroke-width="1.5"/></svg>';
+      html += '        </button>';
+      html += '      </div>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="text-right">';
+      html += '    <p class="text-base font-normal text-cosmetics-dark">' + formatMoney(item.final_line_price) + '</p>';
+      html += '  </div>';
+      html += '</div>';
+    });
+  
+    cartItemsContainer.innerHTML = html;
+    attachQuantityListeners();
+  }
+  
+  // Attach quantity button listeners
+  function attachQuantityListeners() {
+    const qtyBtns = document.querySelectorAll('.cart-qty-btn');
+    qtyBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const action = this.dataset.action;
+        const key = this.dataset.key;
+        const input = document.querySelector('input[data-key="' + key + '"]');
+        let qty = parseInt(input.value, 10);
+  
+        if (action === 'increase') {
+          qty += 1;
+        } else if (action === 'decrease' && qty > 0) {
+          qty -= 1;
+        }
+  
+        updateCartItem(key, qty);
+      });
+    });
+  
+    // Handle direct input changes
+    const qtyInputs = document.querySelectorAll('input[data-key]');
+    qtyInputs.forEach(function(input) {
+      input.addEventListener('change', function() {
+        const key = this.dataset.key;
+        const qty = Math.max(0, parseInt(this.value, 10) || 0);
+        updateCartItem(key, qty);
+      });
+    });
+  }
+  
+  // Update cart item quantity
+  function updateCartItem(key, quantity) {
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: key, quantity: quantity })
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(cart) {
+      updateCart();
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: cart }));
+    })
+    .catch(function(error) {
+      console.error('Error updating cart:', error);
+    });
+  }
+  
+  // Event listeners
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeDrawer);
+  }
+  
+  if (overlay) {
+    overlay.addEventListener('click', closeDrawer);
+  }
+  
+  // Listen for cart updates
+  document.addEventListener('cart:updated', function() {
+    updateCart();
+    openDrawer();
+  });
+  
+  // Listen for add to cart events
+  document.addEventListener('cart:add', function() {
+    updateCart();
+    openDrawer();
+  });
+  
+  // Listen for cart open events (from header cart icon)
+  document.addEventListener('cart:open', function() {
+    updateCart();
+    openDrawer();
+  });
+  
+  // ESC key to close
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !drawer.classList.contains('translate-x-full')) {
+      closeDrawer();
+    }
+  });
+  
+  // Initial cart update
+  updateCart();
+  })();
+</script>

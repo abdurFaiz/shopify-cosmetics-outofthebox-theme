@@ -1,7 +1,7 @@
 <section id="social-{{ section.id }}" class="relative w-full full-width overflow-hidden bg-white py-16 md:py-20">
 
   {{- '<!-- Header -->' }}
-  <div class="max-w-7xl mx-auto px-6 md:px-10 mb-12">
+  <div class="max-w-full w-full px-6 md:px-10 py-20">
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
       <div class="flex flex-col gap-4">
         {% if section.settings.eyebrow != blank %}
@@ -9,11 +9,18 @@
             {{ section.settings.eyebrow }}
           </p>
         {% endif %}
-        {% if section.settings.heading != blank %}
-          <h2 class="m-0 font-serif font-normal text-[#1a1a1a] leading-tight" style="font-size: clamp(36px, 4vw, 52px);">
-            {{ section.settings.heading }}
-          </h2>
-        {% endif %}
+        <div class="flex flex-row gap-1">
+          {% if section.settings.heading != blank %}
+            <h2 class="m-0 font-medium font-sans text-[#1a1a1a] leading-tight text-5xl">
+              {{ section.settings.heading }}
+            </h2>
+          {% endif %}
+          {% if section.settings.heading-echma != blank %}
+            <h2 class="m-0 font-serif font-normal text-[#1a1a1a] leading-tight text-5xl">
+              {{ section.settings.heading-echma }}
+            </h2>
+          {% endif %}
+        </div>
       </div>
       {% if section.settings.cta_text != blank and section.settings.cta_url != blank %}
         <a
@@ -41,7 +48,7 @@
       {% endif %}
     </div>
     {% if section.settings.body_text != blank %}
-      <p class="mt-6 font-sans text-[15px] text-cosmetics-dark leading-relaxed max-w-2xl">
+      <p class="mt-6 font-sans text-base text-cosmetics-dark leading-relaxed max-w-2xl">
         {{ section.settings.body_text }}
       </p>
     {% endif %}
@@ -50,30 +57,108 @@
   {{- '<!-- Infinite scrolling track -->' }}
   {% assign social_blocks = section.blocks | where: 'type', 'social_post' %}
   {% if social_blocks.size > 0 %}
-    <div class="social-marquee-wrapper relative">
+    <div class="social-marquee-wrapper pt-14 relative overflow-hidden">
       <div id="social-track-{{ section.id }}" class="social-track flex gap-4 will-change-transform">
+        {{- '<!-- Original cards -->' }}
         {% for block in social_blocks %}
+          {% assign aspect_ratio = block.settings.aspect_ratio | default: '3:4' %}
+          {% if aspect_ratio == '9:16' %}
+            {% assign card_width = section.settings.card_width %}
+            {% assign card_height = card_width | times: 1.778 | round %}
+          {% else %}
+            {% assign card_width = section.settings.card_width %}
+            {% assign card_height = card_width | times: 1.333 | round %}
+          {% endif %}
+
           <div
-            class="social-card shrink-0 relative rounded-lg overflow-hidden bg-[#f5f5f5]"
-            style="width: {{ section.settings.card_width }}px; height: {{ section.settings.card_height }}px;"
+            class="social-card shrink-0 relative overflow-hidden bg-[#f5f5f5]"
+            style="width: {{ card_width }}px; height: {{ card_height }}px;"
             {{ block.shopify_attributes }}>
 
             {{- '<!-- Image/Video layer -->' }}
-            <div class="absolute inset-0">
+            <div class="absolute inset-0 w-full h-full">
               {% if block.settings.image %}
                 {% assign img_alt = block.settings.image.alt | escape %}
-                {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', class: 'w-full h-full object-cover', alt: img_alt }}
+                <img
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  alt="{{ img_alt }}"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                  style="object-fit: cover;">
               {% elsif block.settings.fallback_image_url != blank %}
                 <img
                   src="{{ block.settings.fallback_image_url }}"
                   alt="{{ block.settings.username | escape }}"
                   loading="lazy"
-                  class="w-full h-full object-cover">
+                  class="w-full h-full object-cover"
+                  style="object-fit: cover;">
               {% endif %}
             </div>
 
             {{- '<!-- Overlay gradient -->' }}
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+
+            {{- '<!-- Content overlay -->' }}
+            <div class="absolute inset-0 flex flex-col justify-between p-4">
+              {{- '<!-- Top: Username -->' }}
+              {% if block.settings.username != blank %}
+                <div class="flex items-center gap-2">
+                  <span class="font-sans text-xs font-semibold text-white uppercase tracking-wider">
+                    @{{ block.settings.username }}</span>
+                </div>
+              {% endif %}
+
+              {{- '<!-- Bottom: Caption -->' }}
+              {% if block.settings.caption != blank %}
+                <p class="font-sans text-sm text-white leading-relaxed line-clamp-3">
+                  {{ block.settings.caption }}
+                </p>
+              {% endif %}
+            </div>
+
+            {{- '<!-- Hover overlay -->' }}
+            <div class="absolute inset-0 bg-black/0 transition-colors duration-300 hover:bg-black/20"></div>
+          </div>
+        {% endfor %}
+
+        {{- '<!-- Duplicate cards for seamless loop -->' }}
+        {% for block in social_blocks %}
+          {% assign aspect_ratio = block.settings.aspect_ratio | default: '3:4' %}
+          {% if aspect_ratio == '9:16' %}
+            {% assign card_width = section.settings.card_width %}
+            {% assign card_height = card_width | times: 1.778 | round %}
+          {% else %}
+            {% assign card_width = section.settings.card_width %}
+            {% assign card_height = card_width | times: 1.333 | round %}
+          {% endif %}
+
+          <div
+            class="social-card shrink-0 relative overflow-hidden bg-[#f5f5f5]"
+            style="width: {{ card_width }}px; height: {{ card_height }}px;"
+            aria-hidden="true">
+
+            {{- '<!-- Image/Video layer -->' }}
+            <div class="absolute inset-0 w-full h-full">
+              {% if block.settings.image %}
+                {% assign img_alt = block.settings.image.alt | escape %}
+                <img
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  alt="{{ img_alt }}"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                  style="object-fit: cover;">
+              {% elsif block.settings.fallback_image_url != blank %}
+                <img
+                  src="{{ block.settings.fallback_image_url }}"
+                  alt="{{ block.settings.username | escape }}"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                  style="object-fit: cover;">
+              {% endif %}
+            </div>
+
+            {{- '<!-- Overlay gradient -->' }}
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
 
             {{- '<!-- Content overlay -->' }}
             <div class="absolute inset-0 flex flex-col justify-between p-4">
@@ -106,6 +191,7 @@
 <style>
   #social-{{ section.id }} .social-marquee-wrapper {
     overflow: hidden;
+    position: relative;
   }
 
   #social-{{ section.id }}
@@ -119,81 +205,205 @@
   }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
   (function() {
     'use strict';
   
+    // ── GSAP ScrollTrigger Animations ──────────────────────────────────────
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      
+      const section = document.getElementById('social-{{ section.id }}');
+      if (section) {
+        const mm = gsap.matchMedia();
+        
+        mm.add({
+          isDesktop: '(min-width: 1024px)',
+          isTablet: '(min-width: 768px) and (max-width: 1023px)',
+          isMobile: '(max-width: 767px)',
+          reduceMotion: '(prefers-reduced-motion: reduce)'
+        }, (context) => {
+          const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+          
+          const duration = reduceMotion ? 0 : (isMobile ? 0.6 : 0.8);
+          const staggerDelay = reduceMotion ? 0 : (isMobile ? 0.08 : 0.1);
+          
+          // Fade in eyebrow
+          const eyebrow = section.querySelector('p.font-sans.text-xs');
+          if (eyebrow) {
+            gsap.from(eyebrow, {
+              opacity: reduceMotion ? 1 : 0,
+              y: reduceMotion ? 0 : 20,
+              duration: reduceMotion ? 0 : 0.6,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: eyebrow,
+                start: isMobile ? 'top 85%' : 'top 80%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+          
+          // Fade in headings
+          const headings = section.querySelectorAll('h2');
+          if (headings.length > 0) {
+            gsap.from(headings, {
+              opacity: reduceMotion ? 1 : 0,
+              y: reduceMotion ? 0 : (isMobile ? 20 : 30),
+              duration: duration,
+              stagger: staggerDelay,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: headings[0],
+                start: isMobile ? 'top 85%' : 'top 80%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+          
+          // Fade in body text
+          const bodyText = section.querySelector('p.mt-6');
+          if (bodyText) {
+            gsap.from(bodyText, {
+              opacity: reduceMotion ? 1 : 0,
+              y: reduceMotion ? 0 : 20,
+              duration: duration,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: bodyText,
+                start: isMobile ? 'top 85%' : 'top 80%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+          
+          // Fade in CTA button
+          const ctaBtn = section.querySelector('a.inline-flex');
+          if (ctaBtn) {
+            gsap.from(ctaBtn, {
+              opacity: reduceMotion ? 1 : 0,
+              scale: reduceMotion ? 1 : 0.9,
+              duration: duration,
+              ease: reduceMotion ? 'none' : 'back.out(1.7)',
+              scrollTrigger: {
+                trigger: ctaBtn,
+                start: isMobile ? 'top 90%' : 'top 85%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+          
+          // Fade in social cards with stagger
+          const socialCards = section.querySelectorAll('.social-card');
+          if (socialCards.length > 0) {
+            gsap.from(socialCards, {
+              opacity: reduceMotion ? 1 : 0,
+              y: reduceMotion ? 0 : (isMobile ? 30 : 40),
+              duration: duration,
+              stagger: staggerDelay,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section.querySelector('.social-marquee-wrapper'),
+              start: 'top 75%',
+              toggleActions: 'play none none none'
+            }
+          });
+        }
+      }
+    }
+  
+    // ── Original Marquee Logic ─────────────────────────────────────────────
     const sectionId = '{{ section.id }}';
     const track = document.getElementById('social-track-' + sectionId);
     
     if (!track) return;
-  
-    const cards = Array.from(track.querySelectorAll('.social-card'));
-    const totalCards = cards.length;
     
-    if (totalCards === 0) return;
-  
-    // Clone cards for seamless loop
-    const cloneCount = Math.max(3, Math.ceil(window.innerWidth / cards[0].offsetWidth) + 2);
+    const duration = {{ section.settings.scroll_duration | default: 30 }} * 1000;
+    let animationId;
+    let startTime;
+    let isPaused = false;
+    let pausedProgress = 0;
     
-    for (let i = 0; i < cloneCount; i++) {
-      cards.forEach(card => {
-        const clone = card.cloneNode(true);
-        clone.setAttribute('aria-hidden', 'true');
-        track.appendChild(clone);
-      });
-    }
-  
-    // Calculate total width
-    function getTotalWidth() {
-      const allCards = track.querySelectorAll('.social-card');
+    function getHalfWidth() {
+      const cards = track.querySelectorAll('.social-card');
+      const halfCount = cards.length / 2;
       let width = 0;
-      allCards.forEach(card => {
-        width += card.offsetWidth + 16; // 16px gap
-      });
+      
+      for (let i = 0; i < halfCount; i++) {
+        width += cards[i].offsetWidth + 16;
+      }
+      
       return width;
     }
-  
-    const totalWidth = getTotalWidth();
-    const duration = {{ section.settings.scroll_duration | default: 30 }};
-  
-    // Create seamless loop animation
-    gsap.set(track, { x: 0 });
     
-    const animation = gsap.to(track, {
-      x: -totalWidth / 2,
-      duration: duration,
-      ease: 'none',
-      repeat: -1,
-      modifiers: {
-        x: gsap.utils.wrap(-totalWidth / 2, 0)
-      }
-    });
-  
-    // Pause on hover (desktop only)
-    if (window.matchMedia('(hover: hover)').matches) {
-      track.addEventListener('mouseenter', () => {
-        gsap.to(animation, { timeScale: 0, duration: 0.5, ease: 'power2.out' });
-      });
+    function animate(currentTime) {
+      if (!startTime) startTime = currentTime;
       
-      track.addEventListener('mouseleave', () => {
-        gsap.to(animation, { timeScale: 1, duration: 0.5, ease: 'power2.in' });
-      });
+      if (!isPaused) {
+        const elapsed = currentTime - startTime + pausedProgress;
+        const halfWidth = getHalfWidth();
+        const progress = (elapsed % duration) / duration;
+        const translateX = -(progress * halfWidth);
+        
+        track.style.transform = 'translateX(' + translateX + 'px)';
+      }
+      
+      animationId = requestAnimationFrame(animate);
     }
-  
-    // Recalculate on resize
+    
+    function startAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+      startTime = null;
+      animationId = requestAnimationFrame(animate);
+    }
+    
+    track.addEventListener('mouseenter', function() {
+      isPaused = true;
+    });
+    
+    track.addEventListener('mouseleave', function() {
+      isPaused = false;
+    });
+    
+    function init() {
+      const wrapper = track.parentElement;
+      const wrapperWidth = wrapper.offsetWidth;
+      const trackWidth = track.scrollWidth / 2;
+      
+      if (trackWidth < wrapperWidth * 2) {
+        const originalCards = Array.from(track.children).slice(0, track.children.length / 2);
+        originalCards.forEach(function(card) {
+          const clone = card.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          track.appendChild(clone);
+        });
+      }
+      
+      startAnimation();
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    
     let resizeTimer;
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        animation.kill();
-        location.reload(); // Simple approach for resize
+      resizeTimer = setTimeout(function() {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        startAnimation();
       }, 300);
     });
   
   })();
 </script>
+
 
 {% schema %}
   {
@@ -213,13 +423,18 @@
         "type": "text",
         "id": "heading",
         "label": "Heading",
-        "default": "Join us in taking skincare beyond the bathroom"
+        "default": "Use it, feel it, and share it with"
       },
       {
+        "type": "text",
+        "id": "heading-echma",
+        "label": "Heading",
+        "default": "@ECHMA"
+      }, {
         "type": "textarea",
         "id": "body_text",
         "label": "Body Text",
-        "default": "Tag us in your caption, @topicals, to join in on the fun"
+        "default": "Skincare should fit your life, not just your shelf. Come be part of that."
       }, {
         "type": "header",
         "content": "Call to Action"
@@ -227,7 +442,7 @@
         "type": "text",
         "id": "cta_text",
         "label": "Button Text",
-        "default": "Tag In"
+        "default": "Tag Us"
       }, {
         "type": "url",
         "id": "cta_url",
@@ -278,12 +493,29 @@
             "type": "image_picker",
             "id": "image",
             "label": "Post Image"
-          }, {
+          },
+          {
             "type": "text",
             "id": "fallback_image_url",
             "label": "Fallback Image URL",
             "info": "Used when no image is picked above"
-          }, {
+          },
+          {
+            "type": "select",
+            "id": "aspect_ratio",
+            "label": "Aspect Ratio",
+            "options": [
+              {
+                "value": "3:4",
+                "label": "3:4 (Portrait)"
+              }, {
+                "value": "9:16",
+                "label": "9:16 (Tall)"
+              }
+            ],
+            "default": "3:4"
+          },
+          {
             "type": "text",
             "id": "username",
             "label": "Username (without @)",
@@ -305,24 +537,32 @@
           {
             "type": "social_post",
             "settings": {
+              "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_3.jpg?v=1776738649",
+              "aspect_ratio": "3:4",
               "username": "polonaamy",
               "caption": "Free Headband"
             }
           }, {
             "type": "social_post",
             "settings": {
+              "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_2.jpg?v=1776738637",
+              "aspect_ratio": "9:16",
               "username": "alexislconway",
               "caption": "🧴✨ for the crib and one for the gym bag"
             }
           }, {
             "type": "social_post",
             "settings": {
+              "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_1.jpg?v=1776738623",
+              "aspect_ratio": "3:4",
               "username": "username3",
               "caption": "My daily routine"
             }
           }, {
             "type": "social_post",
             "settings": {
+              "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_2.jpg?v=1776738637",
+              "aspect_ratio": "9:16",
               "username": "username4",
               "caption": "Glowing skin starts here"
             }

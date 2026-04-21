@@ -1,20 +1,134 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "product",
-      "settings": {}
+      "settings": {
+        "show_rating": true,
+        "rating_count": "38",
+        "routine_heading": "Complete The Routine",
+        "show_related_products": true,
+        "related_heading": "You May Also Like",
+        "related_collection": "",
+        "products_to_show": 8,
+        "show_related_rating": true
+      },
+      "blocks": {
+        "routine_product_1": {
+          "type": "routine_product",
+          "settings": {
+            "product": "",
+            "product_image": "",
+            "product_title": "Renewal Cream",
+            "product_description": "Smoothing, strengthening daily moisturizer",
+            "product_price": "$75.00"
+          }
+        },
+        "routine_product_2": {
+          "type": "routine_product",
+          "settings": {
+            "product": "",
+            "product_image": "",
+            "product_title": "Supercharged Glow Complex",
+            "product_description": "Vitamin-rich brightening, firming complex",
+            "product_price": "$80.00"
+          }
+        }
+      },
+      "block_order": [
+        "routine_product_1",
+        "routine_product_2"
+      ]
+    },
+    "testimonials": {
+      "type": "testimonials-section",
+      "settings": {
+        "eyebrow": "ECHMA & YOU",
+        "heading": "The Community",
+        "body_text": "Powered by real science, made for real life. Discover how our community are incorporating DUA™ into their daily routines.",
+        "card_width": 600,
+        "card_image_height": 700,
+        "card_gap": 14
+      },
+      "blocks": {
+        "testimonial_1": {
+          "type": "card",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/value-3.jpg?v=1776682229",
+            "hover_video_url": "https://cdn.shopify.com/videos/c/o/v/8e7aa04fab8749b1883ec86d4543a7cb.mp4",
+            "username": "polonaamy",
+            "is_playing": true,
+            "fallback_product_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826",
+            "product_name": "Balancing Cream Cleanser",
+            "product_price": "$40.00"
+          }
+        },
+        "testimonial_2": {
+          "type": "card",
+          "settings": {
+            "hover_video_url": "https://cdn.shopify.com/videos/c/o/v/b5b410bae61f4b5db61f7cd3e949219d.mp4",
+            "username": "alexislconway",
+            "is_playing": false
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2"
+      ]
+    },
+    "social": {
+      "type": "social-section",
+      "settings": {
+        "eyebrow": "FOLLOW US",
+        "heading": "Use it, feel it, and share it with",
+        "heading-echma": "@ECHMA",
+        "body_text": "Skincare should fit your life, not just your shelf. Come be part of that.",
+        "cta_text": "Tag Us",
+        "cta_url": "",
+        "cta_new_tab": true,
+        "card_width": 280,
+        "card_height": 400,
+        "scroll_duration": 30
+      },
+      "blocks": {
+        "social_1": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_3.jpg?v=1776738649",
+            "aspect_ratio": "3:4",
+            "username": "polonaamy",
+            "caption": "Free Headband"
+          }
+        },
+        "social_2": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_2.jpg?v=1776738637",
+            "aspect_ratio": "9:16",
+            "username": "alexislconway",
+            "caption": "🧴✨ for the crib and one for the gym bag"
+          }
+        },
+        "social_3": {
+          "type": "social_post",
+          "settings": {
+            "fallback_image_url": "https://cdn.shopify.com/s/files/1/0814/5217/1522/files/ig_1.jpg?v=1776738623",
+            "aspect_ratio": "3:4",
+            "username": "username3",
+            "caption": "My daily routine"
+          }
+        }
+      },
+      "block_order": [
+        "social_1",
+        "social_2",
+        "social_3"
+      ]
     }
   },
   "order": [
-    "main"
+    "main",
+    "testimonials",
+    "social"
   ]
 }

@@ -1,9 +1,9 @@
 {% comment %} 
-                  About Section — "Born from ritual. Perfected by science." 
-                  2-column layout: left content panel + right full-bleed image
+                        About Section — "Born from ritual. Perfected by science." 
+                        2-column layout: left content panel + right full-bleed image
 {% endcomment %}
 
-<section style="background-color: {{ section.settings.background_color }};" class="full-width w-full overflow-hidden">
+<section style="background-color: {{ section.settings.background_color }};" class="about-section-{{ section.id }} full-width w-full overflow-hidden">
   <div class="grid grid-cols-1 md:grid-cols-2 min-h-[560px]">
 
     <!-- Left Column -->
@@ -84,6 +84,115 @@
     </div>
   </div>
 </section>
+
+<script>
+  (function() {
+  'use strict';
+  
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  
+  gsap.registerPlugin(ScrollTrigger);
+  
+  const section = document.querySelector('.about-section-{{ section.id }}');
+  if (!section) return;
+  
+  const mm = gsap.matchMedia();
+  
+  mm.add({
+    isDesktop: '(min-width: 1024px)',
+    isTablet: '(min-width: 768px) and (max-width: 1023px)',
+    isMobile: '(max-width: 767px)',
+    reduceMotion: '(prefers-reduced-motion: reduce)'
+  }, (context) => {
+    const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+    
+    const yDistance = isMobile ? 20 : isTablet ? 25 : 30;
+    const duration = reduceMotion ? 0 : (isMobile ? 0.6 : 0.8);
+    const staggerDelay = reduceMotion ? 0 : (isMobile ? 0.1 : 0.2);
+    
+    // Fade in heading
+    const heading = section.querySelector('h2');
+    if (heading) {
+      gsap.from(heading, {
+        opacity: reduceMotion ? 1 : 0,
+        y: reduceMotion ? 0 : yDistance,
+        duration: duration,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: heading,
+          start: isMobile ? 'top 85%' : 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Stagger gallery images
+    const figures = section.querySelectorAll('figure');
+    if (figures.length > 0) {
+      gsap.from(figures, {
+        opacity: reduceMotion ? 1 : 0,
+        y: reduceMotion ? 0 : (isMobile ? 30 : 40),
+        duration: duration,
+        stagger: staggerDelay,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: section.querySelector('.flex.gap-6'),
+          start: isMobile ? 'top 80%' : 'top 75%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Fade in body text
+    const bodyText = section.querySelector('p');
+    if (bodyText) {
+      gsap.from(bodyText, {
+        opacity: reduceMotion ? 1 : 0,
+        y: reduceMotion ? 0 : (isMobile ? 15 : 20),
+        duration: duration,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: bodyText,
+          start: isMobile ? 'top 85%' : 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+    
+    // Parallax effect on hero image (disabled on mobile and reduced motion)
+    const heroImg = section.querySelector('.order-1 img');
+    if (heroImg && !isMobile && !reduceMotion) {
+      gsap.to(heroImg, {
+        y: isTablet ? -30 : -50,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+    }
+    
+    // CTA link animation
+    const ctaLink = section.querySelector('a');
+    if (ctaLink) {
+      gsap.from(ctaLink, {
+        opacity: reduceMotion ? 1 : 0,
+        y: reduceMotion ? 0 : 15,
+        duration: duration,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: ctaLink,
+          start: isMobile ? 'top 90%' : 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+  });
+  
+  })();
+</script>
 
 {% schema %}
   {

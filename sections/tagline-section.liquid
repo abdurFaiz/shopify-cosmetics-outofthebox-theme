@@ -16,6 +16,50 @@
 
 </section>
 
+<script>
+  (function() {
+  'use strict';
+  
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  
+  gsap.registerPlugin(ScrollTrigger);
+  
+  const section = document.getElementById('tagline-{{ section.id }}');
+  if (!section) return;
+  
+  const mm = gsap.matchMedia();
+  
+  mm.add({
+    isDesktop: '(min-width: 1024px)',
+    isTablet: '(min-width: 768px) and (max-width: 1023px)',
+    isMobile: '(max-width: 767px)',
+    reduceMotion: '(prefers-reduced-motion: reduce)'
+  }, (context) => {
+    const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+    
+    const duration = reduceMotion ? 0 : (isMobile ? 0.8 : 1);
+    
+    // Fade in and scale tagline text
+    const taglineText = section.querySelector('p');
+    if (taglineText) {
+      gsap.from(taglineText, {
+        opacity: reduceMotion ? 1 : 0,
+        scale: reduceMotion ? 1 : 0.95,
+        y: reduceMotion ? 0 : (isMobile ? 20 : 30),
+        duration: duration,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: section,
+          start: isMobile ? 'top 80%' : 'top 75%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
+  });
+  
+  })();
+</script>
+
 {% schema %}
   {
     "name": "Tagline — Video",
@@ -25,8 +69,7 @@
         "id": "text_value",
         "label": "Tagline Text",
         "default": "Your skin doesn't follow a number, it follows biology. ECHMA is skincare shaped by function, not by age."
-      },
-      {
+      }, {
         "type": "range",
         "id": "font_size",
         "label": "Font Size (px)",
@@ -34,15 +77,14 @@
         "max": 48,
         "step": 2,
         "default": 28
-      },
-      {
+      }, {
         "type": "range",
         "id": "max_width",
         "label": "Text Max Width (px)",
-        "min": 300,
+        "min": 700,
         "max": 900,
         "step": 20,
-        "default": 640
+        "default": 700
       }, {
         "type": "range",
         "id": "min_height",

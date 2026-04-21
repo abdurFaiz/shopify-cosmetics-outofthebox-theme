@@ -200,6 +200,78 @@
   (function () {
     'use strict';
   
+    // ── GSAP ScrollTrigger Animations ──────────────────────────────────────
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      
+      const section = document.getElementById('our-values-{{ section.id }}');
+      if (section) {
+        const mm = gsap.matchMedia();
+        
+        mm.add({
+          isDesktop: '(min-width: 1024px)',
+          isTablet: '(min-width: 768px) and (max-width: 1023px)',
+          isMobile: '(max-width: 767px)',
+          reduceMotion: '(prefers-reduced-motion: reduce)'
+        }, (context) => {
+          const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+          
+          const duration = reduceMotion ? 0 : (isMobile ? 0.6 : 0.8);
+          const staggerDelay = reduceMotion ? 0 : (isMobile ? 0.1 : 0.15);
+          
+          // Fade in heading
+          const heading = section.querySelector('h2');
+          if (heading) {
+            gsap.from(heading, {
+              opacity: reduceMotion ? 1 : 0,
+              x: reduceMotion ? 0 : (isMobile ? -30 : -50),
+              duration: duration,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: heading,
+                start: isMobile ? 'top 85%' : 'top 80%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+          
+          // Fade in controls
+          const controls = section.querySelector('.flex.items-center.gap-2');
+          if (controls) {
+            gsap.from(controls, {
+              opacity: reduceMotion ? 1 : 0,
+              y: reduceMotion ? 0 : 20,
+              duration: duration,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: controls,
+                start: isMobile ? 'top 90%' : 'top 85%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+          
+          // Stagger cards on initial view
+          const cards = section.querySelectorAll('.our-values-card');
+          if (cards.length > 0) {
+            gsap.from(cards, {
+              opacity: reduceMotion ? 1 : 0,
+              x: reduceMotion ? 0 : (isMobile ? 60 : 100),
+              duration: duration,
+              stagger: staggerDelay,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: section.querySelector('.our-values-track-wrapper'),
+                start: isMobile ? 'top 80%' : 'top 75%',
+                toggleActions: 'play none none none'
+              }
+            });
+          }
+        });
+      }
+    }
+  
+    // ── Original Carousel Logic ────────────────────────────────────────────
     const sectionId = '{{ section.id }}';
     const track     = document.getElementById('our-values-track-' + sectionId);
     const prevBtn   = document.getElementById('our-values-prev-' + sectionId);
