@@ -4,13 +4,18 @@
     "description": "Shopify theme with Tailwind CSS v4",
     "type": "module",
     "scripts": {
-        "dev": "vite build --watch",
+        "dev": "concurrently \"shopify theme dev -e development\" \"npx @tailwindcss/cli -i ./assets/tailwind-input.css -o ./assets/tailwind-output.css --minify --watch\"",
         "build": "vite build"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.2.2",
         "lightningcss": "^1.32.0",
-        "tailwindcss": "^4.0.0",
+        "tailwindcss": "^4.2.4",
         "vite": "^6.0.0"
+    },
+    "dependencies": {
+        "@tailwindcss/cli": "^4.2.4",
+        "concurrently": "^9.2.1",
+        "vite-plugin-compression": "^0.5.1"
     }
 }

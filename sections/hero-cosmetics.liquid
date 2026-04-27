@@ -1,14 +1,22 @@
-{% comment %} 
-    Hero Section - Cosmetics Product Showcase (Tailwind CSS v4)
-{% endcomment %}
-
 <section class="relative w-full h-screen min-h-[600px] overflow-hidden">
+  {%- liquid
+    assign fetchpriority = 'auto'
+    assign loading = 'lazy'
+    if section.index == 1
+      assign fetchpriority = 'high'
+      assign loading = 'eager'
+    endif
+  -%}
   {% if section.settings.background_image %}
     <div class="absolute inset-0 z-[1]">
-      {{ section.settings.background_image | image_url: width: 1920 | image_tag: 
- loading: 'eager',
- widths: '375, 750, 1100, 1500, 1920',
- class: 'w-full h-full object-cover object-center'
+      {{
+        section.settings.background_image
+        | image_url: width: 1920
+        | image_tag:
+          loading: loading,
+          fetchpriority: fetchpriority,
+          widths: '375, 750, 1100, 1500, 1920',
+          class: 'w-full h-full object-cover object-center'
       }}
     </div>
   {% endif %}
@@ -18,19 +26,25 @@
     <nav class="flex flex-col gap-3 md:gap-4 items-start">
       {% if section.settings.nav_item_1 != blank %}
         <button class="group bg-transparent border-none text-white/70 font-sans text-[13px] md:text-sm font-normal tracking-wide cursor-pointer p-0 transition-colors duration-300 text-left relative pl-[18px] md:pl-5 hover:text-white">
-          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 md:w-2.5 md:h-2.5 border border-white/50 rounded-sm bg-white transition-all duration-300"></span>
+          <span
+            class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 md:w-2.5 md:h-2.5 border border-white/50 rounded-sm bg-white transition-all duration-300"
+          ></span>
           {{ section.settings.nav_item_1 }}
         </button>
       {% endif %}
       {% if section.settings.nav_item_2 != blank %}
         <button class="group bg-transparent border-none text-white/70 font-sans text-[13px] md:text-sm font-normal tracking-wide cursor-pointer p-0 transition-colors duration-300 text-left relative pl-[18px] md:pl-5 hover:text-white">
-          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 md:w-2.5 md:h-2.5 border border-white/50 rounded-sm bg-transparent transition-all duration-300 group-hover:bg-white group-hover:border-white"></span>
+          <span
+            class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 md:w-2.5 md:h-2.5 border border-white/50 rounded-sm bg-transparent transition-all duration-300 group-hover:bg-white group-hover:border-white"
+          ></span>
           {{ section.settings.nav_item_2 }}
         </button>
       {% endif %}
       {% if section.settings.nav_item_3 != blank %}
         <button class="group bg-transparent border-none text-white/70 font-sans text-[13px] md:text-sm font-normal tracking-wide cursor-pointer p-0 transition-colors duration-300 text-left relative pl-[18px] md:pl-5 hover:text-white">
-          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 md:w-2.5 md:h-2.5 border border-white/50 rounded-sm bg-transparent transition-all duration-300 group-hover:bg-white group-hover:border-white"></span>
+          <span
+            class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 md:w-2.5 md:h-2.5 border border-white/50 rounded-sm bg-transparent transition-all duration-300 group-hover:bg-white group-hover:border-white"
+          ></span>
           {{ section.settings.nav_item_3 }}
         </button>
       {% endif %}
@@ -53,7 +67,10 @@
     <!-- CTA Button -->
     {% if section.settings.cta_label != blank and section.settings.cta_url != blank %}
       <div class="flex justify-end items-end">
-        <a href="{{ section.settings.cta_url }}" class="inline-flex items-center gap-2 bg-white text-black font-sans text-[13px] md:text-sm font-medium no-underline px-6 py-3 md:px-7 md:py-3.5 rounded transition-all duration-300 tracking-wide hover:bg-white/95 hover:-translate-y-0.5 hover:shadow-lg">
+        <a
+          href="{{ section.settings.cta_url }}"
+          class="inline-flex items-center gap-2 bg-white text-black font-sans text-[13px] md:text-sm font-medium no-underline px-6 py-3 md:px-7 md:py-3.5 rounded transition-all duration-300 tracking-wide hover:bg-white/95 hover:-translate-y-0.5 hover:shadow-lg"
+        >
           {{ section.settings.cta_label }}
           {% if section.settings.show_price and section.settings.price != blank %}
             <span class="font-normal">- {{ section.settings.price }}</span>
@@ -64,14 +81,18 @@
 
     <!-- Mute Button -->
     {% if section.settings.mute_button %}
-      <button class="absolute bottom-8 right-6 md:bottom-12 md:right-12 w-10 h-10 md:w-11 md:h-11 bg-white/15 backdrop-blur-[10px] border border-white/20 rounded text-white cursor-pointer flex items-center justify-center transition-all duration-300 p-0 hover:bg-white/25 hover:border-white/30" aria-label="Mute video">
+      <button
+        class="absolute bottom-8 right-6 md:bottom-12 md:right-12 w-10 h-10 md:w-11 md:h-11 bg-white/15 backdrop-blur-[10px] border border-white/20 rounded text-white cursor-pointer flex items-center justify-center transition-all duration-300 p-0 hover:bg-white/25 hover:border-white/30"
+        aria-label="Mute video"
+      >
         <svg
           width="20"
           height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          class="w-[18px] h-[18px] md:w-5 md:h-5">
+          class="w-[18px] h-[18px] md:w-5 md:h-5"
+        >
           <rect
             x="3"
             y="3"
@@ -101,86 +122,97 @@
 </section>
 
 {% schema %}
-  {
-    "name": "Hero Cosmetics",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "background_image",
-        "label": "Background Image",
-        "info": "Recommended size: 1920x1080px"
-      },
-      {
-        "type": "header",
-        "content": "Navigation Items"
-      },
-      {
-        "type": "text",
-        "id": "nav_item_1",
-        "label": "Navigation Item 1",
-        "default": "Renew"
-      },
-      {
-        "type": "text",
-        "id": "nav_item_2",
-        "label": "Navigation Item 2",
-        "default": "Activate"
-      }, {
-        "type": "text",
-        "id": "nav_item_3",
-        "label": "Navigation Item 3",
-        "default": "Balance"
-      }, {
-        "type": "header",
-        "content": "Content"
-      }, {
-        "type": "text",
-        "id": "subtitle",
-        "label": "Subtitle",
-        "default": "Smoothing, strengthening daily moisturizer"
-      }, {
-        "type": "text",
-        "id": "title",
-        "label": "Title",
-        "default": "Renewal Cream"
-      }, {
-        "type": "header",
-        "content": "Call to Action"
-      }, {
-        "type": "text",
-        "id": "cta_label",
-        "label": "Button Label",
-        "default": "SHOP NOW"
-      }, {
-        "type": "url",
-        "id": "cta_url",
-        "label": "Button URL"
-      }, {
-        "type": "checkbox",
-        "id": "show_price",
-        "label": "Show Price",
-        "default": true
-      }, {
-        "type": "text",
-        "id": "price",
-        "label": "Price",
-        "default": "$75.00"
-      }, {
-        "type": "header",
-        "content": "Settings"
-      }, {
-        "type": "checkbox",
-        "id": "mute_button",
-        "label": "Show Mute Button",
-        "default": true,
-        "info": "Display mute button for video backgrounds"
-      }
-    ],
-    "presets": [
-      {
-        "name": "Hero Cosmetics",
-        "category": "Hero"
-      }
-    ]
-  }
+{
+  "name": "Hero Cosmetics",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Recommended size: 1920x1080px"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Items"
+    },
+    {
+      "type": "text",
+      "id": "nav_item_1",
+      "label": "Navigation Item 1",
+      "default": "Renew"
+    },
+    {
+      "type": "text",
+      "id": "nav_item_2",
+      "label": "Navigation Item 2",
+      "default": "Activate"
+    },
+    {
+      "type": "text",
+      "id": "nav_item_3",
+      "label": "Navigation Item 3",
+      "default": "Balance"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Smoothing, strengthening daily moisturizer"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Renewal Cream"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show Price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "label": "Price",
+      "default": "$75.00"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "mute_button",
+      "label": "Show Mute Button",
+      "default": true,
+      "info": "Display mute button for video backgrounds"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Cosmetics",
+      "category": "Hero"
+    }
+  ]
+}
 {% endschema %}

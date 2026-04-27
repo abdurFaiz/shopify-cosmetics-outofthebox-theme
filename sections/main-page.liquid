@@ -1,103 +1,125 @@
-{% comment %} 
-                                                                                                            Hero Section - Cosmetics Product Showcase (Tailwind CSS v4)
-{% endcomment %}
-
 <section
   class="full-width relative w-full h-screen min-h-[600px] overflow-hidden"
   style="padding-top:0;"
-  id="hero-section">
+  id="hero-section"
+>
   {%- comment -%} Multiple background images - one for each nav item {%- endcomment -%}
   <div class="absolute inset-0 z-1">
     {%- comment -%} Image 1 - Renew {%- endcomment -%}
     {% if section.settings.image_1 %}
-      <img
-        src="{{ section.settings.image_1 | image_url: width: 1920 }}"
-        alt="Hero background 1"
-        loading="eager"
-        class="hero-image active w-full h-full object-cover object-center"
-        data-index="0"
-        width="1920"
-        height="1080">
+      {{
+        section.settings.image_1
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'Hero background 1',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          class: 'hero-image active w-full h-full object-cover object-center',
+          data_index: '0'
+      }}
     {% else %}
-      <img
-        src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/hero-image.jpg?v=1776594704"
-        alt="Hero background 1"
-        loading="eager"
-        class="hero-image active w-full h-full object-cover object-center"
-        data-index="0"
-        width="1920"
-        height="1080">
+      {{
+        images['hero-image.jpg']
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'Hero background 1',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          class: 'hero-image active w-full h-full object-cover object-center',
+          data_index: '0'
+      }}
     {% endif %}
 
     {%- comment -%} Image 2 - Activate {%- endcomment -%}
     {% if section.settings.image_2 %}
-      <img
-        src="{{ section.settings.image_2 | image_url: width: 1920 }}"
-        alt="Hero background 2"
-        loading="eager"
-        class="hero-image w-full h-full object-cover object-center"
-        data-index="1"
-        width="1920"
-        height="1080"
-        style="opacity:0;">
+      {{
+        section.settings.image_2
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'Hero background 2',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          class: 'hero-image w-full h-full object-cover object-center',
+          data_index: '1',
+          style: 'opacity:0;'
+      }}
     {% else %}
-      <img
-        src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/hero-image-2.jpg?v=1776601609"
-        alt="Hero background 2"
-        loading="eager"
-        class="hero-image w-full h-full object-cover object-center"
-        data-index="1"
-        width="1920"
-        height="1080"
-        style="opacity:0;">
+      {{
+        images['hero-image-2.jpg']
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'Hero background 2',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          class: 'hero-image w-full h-full object-cover object-center',
+          data_index: '1',
+          style: 'opacity:0;'
+      }}
     {% endif %}
 
     {%- comment -%} Image 3 - Balance {%- endcomment -%}
     {% if section.settings.image_3 %}
-      <img
-        src="{{ section.settings.image_3 | image_url: width: 1920 }}"
-        alt="Hero background 3"
-        loading="eager"
-        class="hero-image w-full h-full object-cover object-center"
-        data-index="2"
-        width="1920"
-        height="1080"
-        style="opacity:0;">
+      {{
+        section.settings.image_3
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'Hero background 3',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          class: 'hero-image w-full h-full object-cover object-center',
+          data_index: '2',
+          style: 'opacity:0;'
+      }}
     {% else %}
-      <img
-        src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/hero-image-3.jpg?v=1776601615"
-        alt="Hero background 3"
-        loading="eager"
-        class="hero-image w-full h-full object-cover object-center"
-        data-index="2"
-        width="1920"
-        height="1080"
-        style="opacity:0;">
+      {{
+        images['hero-image-3.jpg']
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'Hero background 3',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          class: 'hero-image w-full h-full object-cover object-center',
+          data_index: '2',
+          style: 'opacity:0;'
+      }}
     {% endif %}
   </div>
 
   {%- comment -%} Gradient overlay — left to right transition {%- endcomment -%}
-  <div class="absolute inset-0 pointer-events-none" style="z-index:1;background:linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 40%, transparent 80%);"></div>
+  <div
+    class="absolute inset-0 pointer-events-none"
+    style="z-index:1;background:linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 40%, transparent 80%);"
+  ></div>
 
-  <div class="relative h-full flex flex-col justify-between px-6 py-10 md:px-10 md:py-8 lg:px-12 lg:py-10 w-full" style="z-index:2;">
-
+  <div
+    class="relative h-full flex flex-col justify-between px-6 py-10 md:px-10 md:py-8 lg:px-12 lg:py-10 w-full"
+    style="z-index:2;"
+  >
     <!-- Navigation Items - Absolute positioned left, near center -->
     <nav
       class="absolute left-6 md:left-10 lg:left-12 top-1/2 flex flex-col gap-3 md:gap-4 items-start"
       style="transform:translateY(-50%);"
-      aria-label="Product navigation">
-
+      aria-label="Product navigation"
+    >
       {%- comment -%} Nav Item 1 — filled square (active indicator) {%- endcomment -%}
       {% if section.settings.nav_item_1 != blank %}
         <button
           class="nav-btn group bg-transparent border-none text-white font-sans text-[13px] md:text-sm font-normal tracking-wide cursor-pointer p-0 transition-colors duration-300 text-left relative pl-5 md:pl-6 active"
           data-index="0"
-          type="button">
+          type="button"
+        >
           {%- comment -%} Filled square = active {%- endcomment -%}
           <span
             class="nav-indicator absolute left-0 top-1/2 -translate-y-1/2 bg-white"
             aria-hidden="true"
-            style="width:9px;height:9px;display:block;"></span>
+            style="width:9px;height:9px;display:block;"
+          ></span>
           {{ section.settings.nav_item_1 }}
         </button>
       {% endif %}
@@ -107,12 +129,14 @@
         <button
           class="nav-btn group bg-transparent border-none text-white/60 font-sans text-[13px] md:text-sm font-normal tracking-wide cursor-pointer p-0 transition-colors duration-300 text-left relative pl-5 md:pl-6 hover:text-white"
           data-index="1"
-          type="button">
+          type="button"
+        >
           {%- comment -%} Hollow circle {%- endcomment -%}
           <span
             class="nav-indicator absolute left-0 top-1/2 -translate-y-1/2 rounded-full transition-all duration-300 group-hover:border-white"
             aria-hidden="true"
-            style="width:9px;height:9px;display:block;border:1px solid rgba(255,255,255,0.6);background:transparent;"></span>
+            style="width:9px;height:9px;display:block;border:1px solid rgba(255,255,255,0.6);background:transparent;"
+          ></span>
           {{ section.settings.nav_item_2 }}
         </button>
       {% endif %}
@@ -122,16 +146,17 @@
         <button
           class="nav-btn group bg-transparent border-none text-white/60 font-sans text-[13px] md:text-sm font-normal tracking-wide cursor-pointer p-0 transition-colors duration-300 text-left relative pl-5 md:pl-6 hover:text-white"
           data-index="2"
-          type="button">
+          type="button"
+        >
           {%- comment -%} CSS triangle using border trick — no SVG, no clip-path rendering issues {%- endcomment -%}
           <span
             class="nav-indicator absolute left-0 top-1/2 -translate-y-1/2 transition-all duration-300"
             aria-hidden="true"
-            style="width:0;height:0;display:block;border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:8px solid rgba(255,255,255,0.6);"></span>
+            style="width:0;height:0;display:block;border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:8px solid rgba(255,255,255,0.6);"
+          ></span>
           {{ section.settings.nav_item_3 }}
         </button>
       {% endif %}
-
     </nav>
 
     <!-- Text Content — changes with nav -->
@@ -154,7 +179,8 @@
       <div
         class="content-set"
         data-index="1"
-        style="display:none;">
+        style="display:none;"
+      >
         {% if section.settings.subtitle_2 != blank %}
           <p class="text-white/90 font-sans text-[13px] md:text-[15px] lg:text-base font-normal leading-relaxed m-0 mb-1.5 md:mb-2 tracking-[0.02em]">
             {{ section.settings.subtitle_2 }}
@@ -171,7 +197,8 @@
       <div
         class="content-set"
         data-index="2"
-        style="display:none;">
+        style="display:none;"
+      >
         {% if section.settings.subtitle_3 != blank %}
           <p class="text-white/90 font-sans text-[13px] md:text-[15px] lg:text-base font-normal leading-relaxed m-0 mb-1.5 md:mb-2 tracking-[0.02em]">
             {{ section.settings.subtitle_3 }}
@@ -186,24 +213,35 @@
     </div>
 
     <!-- Product Card - Above CTA button -->
-    <div class="absolute right-6 md:right-8 lg:right-12" style="bottom: 120px;">
+    <div class="hidden md:block absolute right-6 md:right-8 lg:right-12" style="bottom: 120px;">
       {%- comment -%} Card 1 - Renew {%- endcomment -%}
       <div
         class="testimonial-card active bg-white overflow-hidden"
         data-index="0"
-        style="width:184px;">
+        style="width:184px;"
+      >
         {%- comment -%} Product Image - Full width, no padding {%- endcomment -%}
         <div class="w-full bg-white  flex items-center justify-center" style="height:250px; padding:8px">
           {% if section.settings.product_image_1 %}
-            <img
-              src="{{ section.settings.product_image_1 | image_url: width: 260 }}"
-              alt="Product"
-              class="w-full h-full object-contain">
+            {{
+              section.settings.product_image_1
+              | image_url: width: 260
+              | image_tag:
+                alt: 'Product',
+                class: 'w-full h-full object-contain',
+                loading: '  eager',
+                fetchpriority: 'high'
+            }}
           {% else %}
-            <img
-              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-3.jpg?v=1776604855"
-              alt="Product"
-              class="w-full h-full object-contain">
+            {{
+              images['product-3.jpg']
+              | image_url: width: 260
+              | image_tag:
+                alt: 'Product',
+                class: 'w-full h-full object-contain',
+                loading: '  eager',
+                fetchpriority: 'high'
+            }}
           {% endif %}
         </div>
 
@@ -215,7 +253,6 @@
           <p class="text-xs text-gray-500 mb-3 tracking-wide">
             {{ section.settings.product_desc_1 | default: 'T01 - OPAL PINK' }}
           </p>
-         
         </div>
       </div>
 
@@ -223,18 +260,29 @@
       <div
         class="testimonial-card bg-white overflow-hidden hidden"
         data-index="1"
-        style="width:184px;">
+        style="width:184px;"
+      >
         <div class="w-full bg-white flex items-center justify-center" style="height:250px; padding:8px">
           {% if section.settings.product_image_2 %}
-            <img
-              src="{{ section.settings.product_image_2 | image_url: width: 560 }}"
-              alt="Product"
-              class="w-full h-full object-contain">
+            {{
+              section.settings.product_image_2
+              | image_url: width: 560
+              | image_tag:
+                alt: 'Product',
+                class: 'w-full h-full object-contain',
+                loading: 'eager',
+                fetchpriority: 'high'
+            }}
           {% else %}
-            <img
-              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-1.jpg?v=1776604826"
-              alt="Product"
-              class="w-full h-full object-contain">
+            {{
+              images['product-1.jpg']
+              | image_url: width: 560
+              | image_tag:
+                alt: 'Product',
+                class: 'w-full h-full object-contain',
+                loading: 'eager',
+                fetchpriority: 'high'
+            }}
           {% endif %}
         </div>
         <div class="px-4 pb-4" style="margin-bottom: 8px;">
@@ -244,7 +292,6 @@
           <p class="text-xs text-gray-500 mb-3 tracking-wide">
             {{ section.settings.product_desc_2 | default: 'Energizing Formula' }}
           </p>
-        
         </div>
       </div>
 
@@ -252,18 +299,29 @@
       <div
         class="testimonial-card bg-white  overflow-hidden hidden"
         data-index="2"
-        style="width:184px;">
+        style="width:184px;"
+      >
         <div class="w-full bg-white  flex items-center justify-center" style="height:250px; padding:8px">
           {% if section.settings.product_image_3 %}
-            <img
-              src="{{ section.settings.product_image_3 | image_url: width: 560 }}"
-              alt="Product"
-              class="w-full h-full object-contain">
+            {{
+              section.settings.product_image_3
+              | image_url: width: 560
+              | image_tag:
+                alt: 'Product',
+                class: 'w-full h-full object-contain',
+                loading: 'eager',
+                fetchpriority: 'high'
+            }}
           {% else %}
-            <img
-              src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/product-2.jpg?v=1776659921"
-              alt="Product"
-              class="w-full h-full object-contain">
+            {{
+              images['product-2.jpg']
+              | image_url: width: 560
+              | image_tag:
+                alt: 'Product',
+                class: 'w-full h-full object-contain',
+                loading: 'eager',
+                fetchpriority: 'high'
+            }}
           {% endif %}
         </div>
         <div class="px-4 pb-4" style="margin-bottom: 8px;">
@@ -272,18 +330,19 @@
           </h3>
           <p class="text-xs text-gray-500 mb-3 tracking-wide">
             {{ section.settings.product_desc_3 | default: 'Calming Blend' }}
-      
+          </p>
         </div>
       </div>
     </div>
 
     <!-- CTA Buttons - Absolute positioned bottom-right, changes with nav -->
-    <div class="absolute bottom-6 right-6 md:bottom-8 md:right-8 lg:bottom-12 lg:right-12">
+    <div class="hidden md:block absolute bottom-6 right-6 md:bottom-8 md:right-8 lg:bottom-12 lg:right-12">
       {%- comment -%} CTA 1 - Renew {%- endcomment -%}
       <a
         href="{{ section.settings.cta_url_1 | default: '#' }}"
         class="cta-btn active inline-flex items-center gap-1.5 bg-white text-[#1a1a1a] font-sans text-[12px] md:text-[13px] font-medium no-underline px-5 py-2.5 md:px-6 md:py-3 rounded-sm transition-all duration-300 tracking-[0.08em] uppercase hover:bg-white/95 hover:-translate-y-0.5 hover:shadow-md"
-        data-index="0">
+        data-index="0"
+      >
         {{ section.settings.cta_label_1 | default: 'SHOP NOW' }}
         {% if section.settings.show_price and section.settings.price_1 != blank %}
           <span class="font-normal normal-case tracking-normal">– {{ section.settings.price_1 }}</span>
@@ -295,7 +354,8 @@
         href="{{ section.settings.cta_url_2 | default: '#' }}"
         class="cta-btn inline-flex items-center gap-1.5 bg-white text-[#1a1a1a] font-sans text-[12px] md:text-[13px] font-medium no-underline px-5 py-2.5 md:px-6 md:py-3 rounded-sm transition-all duration-300 tracking-[0.08em] uppercase hover:bg-white/95 hover:-translate-y-0.5 hover:shadow-md"
         data-index="1"
-        style="display:none;">
+        style="display:none;"
+      >
         {{ section.settings.cta_label_2 | default: 'SHOP NOW' }}
         {% if section.settings.show_price and section.settings.price_2 != blank %}
           <span class="font-normal normal-case tracking-normal">– {{ section.settings.price_2 }}</span>
@@ -307,16 +367,15 @@
         href="{{ section.settings.cta_url_3 | default: '#' }}"
         class="cta-btn inline-flex items-center gap-1.5 bg-white text-[#1a1a1a] font-sans text-[12px] md:text-[13px] font-medium no-underline px-5 py-2.5 md:px-6 md:py-3 rounded-sm transition-all duration-300 tracking-[0.08em] uppercase hover:bg-white/95 hover:-translate-y-0.5 hover:shadow-md"
         data-index="2"
-        style="display:none;">
+        style="display:none;"
+      >
         {{ section.settings.cta_label_3 | default: 'SHOP NOW' }}
         {% if section.settings.show_price and section.settings.price_3 != blank %}
           <span class="font-normal normal-case tracking-normal">– {{ section.settings.price_3 }}</span>
         {% endif %}
       </a>
     </div>
-
   </div>
-
 </section>
 
 <style>
@@ -344,68 +403,70 @@
 </style>
 
 <script>
-  (function() {
+  (function () {
     const navButtons = document.querySelectorAll('.nav-btn');
     const heroImages = document.querySelectorAll('.hero-image');
     const contentSets = document.querySelectorAll('.content-set');
     const ctaButtons = document.querySelectorAll('.cta-btn');
     const testimonialCards = document.querySelectorAll('.testimonial-card');
-    
-    navButtons.forEach(button => {
-      button.addEventListener('click', function() {
+
+    navButtons.forEach((button) => {
+      button.addEventListener('click', function () {
         const index = parseInt(this.getAttribute('data-index'));
-        
+
         // Remove active class from all buttons
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        
+        navButtons.forEach((btn) => btn.classList.remove('active'));
+
         // Add active class to clicked button
         this.classList.add('active');
-        
+
         // Hide all images
-        heroImages.forEach(img => {
+        heroImages.forEach((img) => {
           img.classList.remove('active');
           img.style.opacity = '0';
         });
-        
+
         // Show selected image
-        const targetImage = document.querySelector(`.hero-image[data-index="${index}"]`);
+        const targetImage =
+          document.querySelector(`.hero-image[data-index="${index}"]`) ||
+          document.querySelector(`.hero-image[data_index="${index}"]`);
         if (targetImage) {
           targetImage.classList.add('active');
           targetImage.style.opacity = '1';
         }
-        
+
         // Hide all content sets
-        contentSets.forEach(content => {
+        contentSets.forEach((content) => {
           content.classList.remove('active');
           content.style.display = 'none';
         });
-        
+
         // Show selected content
         const targetContent = document.querySelector(`.content-set[data-index="${index}"]`);
         if (targetContent) {
           targetContent.classList.add('active');
           targetContent.style.display = 'block';
         }
-        
+
         // Hide all CTA buttons
-        ctaButtons.forEach(cta => {
+        ctaButtons.forEach((cta) => {
           cta.classList.remove('active');
           cta.style.display = 'none';
         });
-        
+
         // Show selected CTA
         const targetCTA = document.querySelector(`.cta-btn[data-index="${index}"]`);
         if (targetCTA) {
           targetCTA.classList.add('active');
           targetCTA.style.display = 'inline-flex';
         }
-        
+
         // Hide all testimonial cards
-        testimonialCards.forEach(card => {
+        testimonialCards.forEach((card) => {
           card.classList.remove('active');
           card.classList.add('hidden');
         });
-        
+
         // Show selected testimonial card
         const targetCard = document.querySelector(`.testimonial-card[data-index="${index}"]`);
         if (targetCard) {
@@ -418,204 +479,241 @@
 </script>
 
 {% schema %}
-  {
-    "name": "Hero Cosmetics",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Background Images"
-      },
-      {
-        "type": "image_picker",
-        "id": "image_1",
-        "label": "Image 1 (Renew)",
-        "info": "Recommended size: 1920x1080px"
-      },
-      {
-        "type": "image_picker",
-        "id": "image_2",
-        "label": "Image 2 (Activate)",
-        "info": "Recommended size: 1920x1080px"
-      },
-      {
-        "type": "image_picker",
-        "id": "image_3",
-        "label": "Image 3 (Balance)",
-        "info": "Recommended size: 1920x1080px"
-      }, {
-        "type": "header",
-        "content": "Navigation Items"
-      }, {
-        "type": "text",
-        "id": "nav_item_1",
-        "label": "Navigation Item 1",
-        "default": "Renew"
-      }, {
-        "type": "text",
-        "id": "nav_item_2",
-        "label": "Navigation Item 2",
-        "default": "Activate"
-      }, {
-        "type": "text",
-        "id": "nav_item_3",
-        "label": "Navigation Item 3",
-        "default": "Balance"
-      }, {
-        "type": "header",
-        "content": "Content - Renew (Nav Item 1)"
-      }, {
-        "type": "text",
-        "id": "subtitle_1",
-        "label": "Subtitle",
-        "default": "Smoothing, strengthening daily moisturizer"
-      }, {
-        "type": "text",
-        "id": "title_1",
-        "label": "Title",
-        "default": "Renewal Cream"
-      }, {
-        "type": "text",
-        "id": "cta_label_1",
-        "label": "Button Label",
-        "default": "SHOP NOW"
-      }, {
-        "type": "url",
-        "id": "cta_url_1",
-        "label": "Button URL"
-      }, {
-        "type": "text",
-        "id": "price_1",
-        "label": "Price",
-        "default": "$75.00"
-      }, {
-        "type": "header",
-        "content": "Content - Activate (Nav Item 2)"
-      }, {
-        "type": "text",
-        "id": "subtitle_2",
-        "label": "Subtitle",
-        "default": "Energizing, revitalizing daily serum"
-      }, {
-        "type": "text",
-        "id": "title_2",
-        "label": "Title",
-        "default": "Activate Serum"
-      }, {
-        "type": "text",
-        "id": "cta_label_2",
-        "label": "Button Label",
-        "default": "SHOP NOW"
-      }, {
-        "type": "url",
-        "id": "cta_url_2",
-        "label": "Button URL"
-      }, {
-        "type": "text",
-        "id": "price_2",
-        "label": "Price",
-        "default": "$85.00"
-      }, {
-        "type": "header",
-        "content": "Content - Balance (Nav Item 3)"
-      }, {
-        "type": "text",
-        "id": "subtitle_3",
-        "label": "Subtitle",
-        "default": "Calming, hydrating daily toner"
-      }, {
-        "type": "text",
-        "id": "title_3",
-        "label": "Title",
-        "default": "Balance Toner"
-      }, {
-        "type": "text",
-        "id": "cta_label_3",
-        "label": "Button Label",
-        "default": "SHOP NOW"
-      }, {
-        "type": "url",
-        "id": "cta_url_3",
-        "label": "Button URL"
-      }, {
-        "type": "text",
-        "id": "price_3",
-        "label": "Price",
-        "default": "$65.00"
-      }, {
-        "type": "header",
-        "content": "Product Card - Renew (Nav Item 1)"
-      }, {
-        "type": "image_picker",
-        "id": "product_image_1",
-        "label": "Product Image",
-        "info": "Recommended size: 360x480px"
-      }, {
-        "type": "text",
-        "id": "product_name_1",
-        "label": "Product Name",
-        "default": "LIQUID BLUSH"
-      }, {
-        "type": "text",
-        "id": "product_desc_1",
-        "label": "Product Description",
-        "default": "T01 - OPAL PINK"
-      }, {
-        "type": "header",
-        "content": "Product Card - Activate (Nav Item 2)"
-      }, {
-        "type": "image_picker",
-        "id": "product_image_2",
-        "label": "Product Image",
-        "info": "Recommended size: 360x480px"
-      }, {
-        "type": "text",
-        "id": "product_name_2",
-        "label": "Product Name",
-        "default": "ACTIVATE SERUM"
-      }, {
-        "type": "text",
-        "id": "product_desc_2",
-        "label": "Product Description",
-        "default": "Energizing Formula"
-      }, {
-        "type": "header",
-        "content": "Product Card - Balance (Nav Item 3)"
-      }, {
-        "type": "image_picker",
-        "id": "product_image_3",
-        "label": "Product Image",
-        "info": "Recommended size: 360x480px"
-      }, {
-        "type": "text",
-        "id": "product_name_3",
-        "label": "Product Name",
-        "default": "BALANCE TONER"
-      }, {
-        "type": "text",
-        "id": "product_desc_3",
-        "label": "Product Description",
-        "default": "Calming Blend"
-      }, {
-        "type": "header",
-        "content": "Settings"
-      }, {
-        "type": "checkbox",
-        "id": "show_price",
-        "label": "Show Price",
-        "default": true
-      }, {
-        "type": "checkbox",
-        "id": "mute_button",
-        "label": "Show Pause/Mute Button",
-        "default": true,
-        "info": "Display pause button for video backgrounds"
-      }
-    ],
-    "presets": [
-      {
-        "name": "Hero Cosmetics",
-        "category": "Hero"
-      }
-    ]
-  }
+{
+  "name": "Hero Cosmetics",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1 (Renew)",
+      "info": "Recommended size: 1920x1080px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2 (Activate)",
+      "info": "Recommended size: 1920x1080px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3 (Balance)",
+      "info": "Recommended size: 1920x1080px"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Items"
+    },
+    {
+      "type": "text",
+      "id": "nav_item_1",
+      "label": "Navigation Item 1",
+      "default": "Renew"
+    },
+    {
+      "type": "text",
+      "id": "nav_item_2",
+      "label": "Navigation Item 2",
+      "default": "Activate"
+    },
+    {
+      "type": "text",
+      "id": "nav_item_3",
+      "label": "Navigation Item 3",
+      "default": "Balance"
+    },
+    {
+      "type": "header",
+      "content": "Content - Renew (Nav Item 1)"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_1",
+      "label": "Subtitle",
+      "default": "Smoothing, strengthening daily moisturizer"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Title",
+      "default": "Renewal Cream"
+    },
+    {
+      "type": "text",
+      "id": "cta_label_1",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_url_1",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "price_1",
+      "label": "Price",
+      "default": "$75.00"
+    },
+    {
+      "type": "header",
+      "content": "Content - Activate (Nav Item 2)"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_2",
+      "label": "Subtitle",
+      "default": "Energizing, revitalizing daily serum"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Title",
+      "default": "Activate Serum"
+    },
+    {
+      "type": "text",
+      "id": "cta_label_2",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_url_2",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "price_2",
+      "label": "Price",
+      "default": "$85.00"
+    },
+    {
+      "type": "header",
+      "content": "Content - Balance (Nav Item 3)"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_3",
+      "label": "Subtitle",
+      "default": "Calming, hydrating daily toner"
+    },
+    {
+      "type": "text",
+      "id": "title_3",
+      "label": "Title",
+      "default": "Balance Toner"
+    },
+    {
+      "type": "text",
+      "id": "cta_label_3",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_url_3",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "price_3",
+      "label": "Price",
+      "default": "$65.00"
+    },
+    {
+      "type": "header",
+      "content": "Product Card - Renew (Nav Item 1)"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_1",
+      "label": "Product Image",
+      "info": "Recommended size: 360x480px"
+    },
+    {
+      "type": "text",
+      "id": "product_name_1",
+      "label": "Product Name",
+      "default": "LIQUID BLUSH"
+    },
+    {
+      "type": "text",
+      "id": "product_desc_1",
+      "label": "Product Description",
+      "default": "T01 - OPAL PINK"
+    },
+    {
+      "type": "header",
+      "content": "Product Card - Activate (Nav Item 2)"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_2",
+      "label": "Product Image",
+      "info": "Recommended size: 360x480px"
+    },
+    {
+      "type": "text",
+      "id": "product_name_2",
+      "label": "Product Name",
+      "default": "ACTIVATE SERUM"
+    },
+    {
+      "type": "text",
+      "id": "product_desc_2",
+      "label": "Product Description",
+      "default": "Energizing Formula"
+    },
+    {
+      "type": "header",
+      "content": "Product Card - Balance (Nav Item 3)"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image_3",
+      "label": "Product Image",
+      "info": "Recommended size: 360x480px"
+    },
+    {
+      "type": "text",
+      "id": "product_name_3",
+      "label": "Product Name",
+      "default": "BALANCE TONER"
+    },
+    {
+      "type": "text",
+      "id": "product_desc_3",
+      "label": "Product Description",
+      "default": "Calming Blend"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show Price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "mute_button",
+      "label": "Show Pause/Mute Button",
+      "default": true,
+      "info": "Display pause button for video backgrounds"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Cosmetics",
+      "category": "Hero"
+    }
+  ]
+}
 {% endschema %}

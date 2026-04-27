@@ -1,53 +1,64 @@
 <section class="preview-product-section-{{ section.id }} w-full full-width flex justify-center py-12 mx-auto md:py-32 bg-white">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
-
     {%- if section.settings.heading != blank -%}
-      <div class="flex items-center justify-center py-20 gap-3">
-        <h2 class="font-serif text-2xl md:text-5xl text-center font-normal text-gray-900" style="color: {{ section.settings.heading_color }};">
+      <div class="flex items-center justify-center py-6 md:py-20 gap-3">
+        <h2
+          class="font-serif text-2xl md:text-5xl text-center font-normal text-gray-900"
+          style="color: {{ section.settings.heading_color }};"
+        >
           {{ section.settings.heading }}
         </h2>
       </div>
     {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
-      <div class="grid grid-cols-1 md:grid-cols-2 justify-center lg:grid-cols-3 gap-4 ">
-
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  justify-center gap-4 ">
         {%- for block in section.blocks -%}
-          {%- assign product_ref = all_products[block.settings.product] -%}
+          {%- assign product_ref = block.settings.product -%}
 
-            <div {{ block.shopify_attributes }} class=" bg-white rounded-xs overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-
+          <div
+            {{ block.shopify_attributes }}
+            class=" bg-white rounded-xs overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+          >
             {%- comment -%} Image container with category badge {%- endcomment -%}
             <div class="relative aspect-3/4 bg-gray-100 overflow-hidden">
               <a
                 href="{%- if product_ref != blank -%}{{ product_ref.url }}{%- elsif block.settings.product_url != blank -%}{{ block.settings.product_url }}{%- else -%}#{%- endif -%}"
                 class="block w-full h-full"
-                aria-label="{{ block.settings.product_title | default: product_ref.title | escape }}">
-
+                aria-label="{{ block.settings.product_title | default: product_ref.title | escape }}"
+              >
                 {%- if product_ref != blank and product_ref.featured_image -%}
-                  {{ product_ref.featured_image
- | image_url: width: 800
- | image_tag:
- loading: 'lazy',
- widths: '400, 600, 800',
- class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
- alt: product_ref.featured_image.alt | default: product_ref.title | escape
+                  {{
+                    product_ref.featured_image
+                    | image_url: width: 800
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '400, 600, 800',
+                      class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
+                      alt: product_ref.featured_image.alt
+                    | default: product_ref.title
+                    | escape
                   }}
                 {%- elsif block.settings.product_image -%}
-                  {{ block.settings.product_image
- | image_url: width: 800
- | image_tag:
- loading: 'lazy',
- widths: '400, 600, 800',
- class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
- alt: block.settings.product_title | escape
+                  {{
+                    block.settings.product_image
+                    | image_url: width: 800
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '400, 600, 800',
+                      class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
+                      alt: block.settings.product_title
+                    | escape
                   }}
                 {%- elsif block.settings.product_image_url != blank -%}
                   <img
                     src="{{ block.settings.product_image_url }}"
                     loading="lazy"
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    alt="{{ block.settings.product_title | escape }}">
+                    alt="{{ block.settings.product_title | escape }}"
+                    width="600"
+                    height="800"
+                  >
                 {%- else -%}
                   <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                     <span class="text-gray-400 text-sm">No image</span>
@@ -66,13 +77,22 @@
                   {%- elsif badge_shape == 'rectangle' -%}
                     <div class="w-12 h-6 shrink-0" style="background-color: {{ section.settings.accent_color }};"></div>
                   {%- elsif badge_shape == 'triangle' -%}
-                    <div class="w-0 h-0 shrink-0" style="border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 18px solid {{ section.settings.accent_color }};"></div>
+                    <div
+                      class="w-0 h-0 shrink-0"
+                      style="border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 18px solid {{ section.settings.accent_color }};"
+                    ></div>
                   {%- elsif badge_shape == 'oval' -%}
-                    <div class="w-4 h-4 shrink-0 rounded-full" style="background-color: {{ section.settings.accent_color }};"></div>
+                    <div
+                      class="w-4 h-4 shrink-0 rounded-full"
+                      style="background-color: {{ section.settings.accent_color }};"
+                    ></div>
                   {%- endif -%}
 
                   {%- comment -%} Label text {%- endcomment -%}
-                  <span class="text-lg md:text-xl font-normal tracking-wide" style="color: {{ section.settings.accent_color }};">
+                  <span
+                    class="text-lg md:text-xl font-normal tracking-wide"
+                    style="color: {{ section.settings.accent_color }};"
+                  >
                     {{ block.settings.category_label }}
                   </span>
                 </div>
@@ -85,15 +105,21 @@
                     type="button"
                     class="group w-12 h-12 rounded-xs bg-white flex items-center justify-center hover:bg-[#241EC6] transition-transform duration-200"
                     aria-label="Add {{ product_ref.title | escape }} to cart"
-                    data-product-id="{{ product_ref.variants.first.id }}">
-                    <span class="w-5 h-5 text-gray-900 group-hover:text-white transition-colors duration-200">{% render 'icon-cart' %}</span>
+                    data-product-id="{{ product_ref.variants.first.id }}"
+                  >
+                    <span class="w-5 h-5 text-gray-900 group-hover:text-white transition-colors duration-200">
+                      {%- render 'icon-cart' -%}
+                    </span>
                   </button>
                 {%- else -%}
                   <button
                     type="button"
                     class="group w-12 h-12 rounded-xs bg-white flex items-center justify-center hover:bg-[#241EC6] transition-transform duration-200"
-                    aria-label="Add {{ block.settings.product_title | escape }} to cart">
-                    <span class="w-5 h-5 text-gray-900 group-hover:text-white transition-colors duration-200">{% render 'icon-cart' %}</span>
+                    aria-label="Add {{ block.settings.product_title | escape }} to cart"
+                  >
+                    <span class="w-5 h-5 text-gray-900 group-hover:text-white transition-colors duration-200">
+                      {%- render 'icon-cart' -%}
+                    </span>
                   </button>
                 {%- endif -%}
               </div>
@@ -128,7 +154,8 @@
                           class="w-4 h-4"
                           style="fill: {{ section.settings.accent_color }};"
                           viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
                           <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                         </svg>
                       {%- endfor -%}
@@ -148,235 +175,250 @@
                 </div>
               </div>
             </div>
-
           </div>
         {%- endfor -%}
-
       </div>
     {%- endif -%}
-
   </div>
 </section>
 
 <script>
-  (function() {
-  'use strict';
-  
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-  
-  gsap.registerPlugin(ScrollTrigger);
-  
-  const section = document.querySelector('.preview-product-section-{{ section.id }}');
-  if (!section) return;
-  
-  const mm = gsap.matchMedia();
-  
-  mm.add({
-    isDesktop: '(min-width: 1024px)',
-    isTablet: '(min-width: 768px) and (max-width: 1023px)',
-    isMobile: '(max-width: 767px)',
-    reduceMotion: '(prefers-reduced-motion: reduce)'
-  }, (context) => {
-    const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
-    
-    const yDistance = isMobile ? 30 : isTablet ? 40 : 40;
-    const duration = reduceMotion ? 0 : (isMobile ? 0.6 : 0.8);
-    const staggerDelay = reduceMotion ? 0 : (isMobile ? 0.1 : 0.15);
-    
-    // Fade in heading
-    const heading = section.querySelector('h2');
-    if (heading) {
-      gsap.from(heading, {
-        opacity: reduceMotion ? 1 : 0,
-        y: reduceMotion ? 0 : yDistance,
-        duration: duration,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: heading,
-          start: isMobile ? 'top 85%' : 'top 80%',
-          toggleActions: 'play none none none'
+  (function () {
+    'use strict';
+
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const section = document.querySelector('.preview-product-section-{{ section.id }}');
+    if (!section) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      {
+        isDesktop: '(min-width: 1024px)',
+        isTablet: '(min-width: 768px) and (max-width: 1023px)',
+        isMobile: '(max-width: 767px)',
+        reduceMotion: '(prefers-reduced-motion: reduce)',
+      },
+      (context) => {
+        const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+
+        const yDistance = isMobile ? 30 : isTablet ? 40 : 40;
+        const duration = reduceMotion ? 0 : isMobile ? 0.6 : 0.8;
+        const staggerDelay = reduceMotion ? 0 : isMobile ? 0.1 : 0.15;
+
+        // Fade in heading
+        const heading = section.querySelector('h2');
+        if (heading) {
+          gsap.from(heading, {
+            opacity: reduceMotion ? 1 : 0,
+            y: reduceMotion ? 0 : yDistance,
+            duration: duration,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: heading,
+              start: isMobile ? 'top 85%' : 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          });
         }
-      });
-    }
-    
-    // Stagger product cards
-    const cards = section.querySelectorAll('.grid > div');
-    if (cards.length > 0) {
-      gsap.from(cards, {
-        opacity: reduceMotion ? 1 : 0,
-        y: reduceMotion ? 0 : (isMobile ? 40 : 60),
-        duration: duration,
-        stagger: staggerDelay,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section.querySelector('.grid'),
-          start: isMobile ? 'top 80%' : 'top 75%',
-          toggleActions: 'play none none none'
+
+        // Stagger product cards
+        const cards = section.querySelectorAll('.grid > div');
+        if (cards.length > 0) {
+          gsap.from(cards, {
+            opacity: reduceMotion ? 1 : 0,
+            y: reduceMotion ? 0 : isMobile ? 40 : 60,
+            duration: duration,
+            stagger: staggerDelay,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section.querySelector('.grid'),
+              start: isMobile ? 'top 80%' : 'top 75%',
+              toggleActions: 'play none none none',
+            },
+          });
         }
-      });
-    }
-  });
-  
+      }
+    );
   })();
 </script>
 
 {% schema %}
-  {
-    "name": "Preview Product Section",
-    "settings": [
-      {
-        "type": "color",
-        "id": "background_color",
-        "label": "Background Color",
-        "default": "#f5f5f0"
-      }, {
-        "type": "text",
-        "id": "heading",
-        "label": "Section Heading",
-        "default": "Renew",
-        "info": "The ECHMA Collection"
-      }, {
-        "type": "color",
-        "id": "heading_color",
-        "label": "Heading Color",
-        "default": "#6366f1"
-      }, {
-        "type": "color",
-        "id": "accent_color",
-        "label": "Accent Color",
-        "default": "#4f46e5"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "product_card",
-        "name": "Product Card",
-        "settings": [
-          {
-            "type": "product",
-            "id": "product",
-            "label": "Product",
-            "info": "Select a product — title, description, price and image will be pulled automatically"
-          },
-          {
-            "type": "header",
-            "content": "Manual Override (used when no product is selected)"
-          },
-          {
-            "type": "image_picker",
-            "id": "product_image",
-            "label": "Product Image"
-          },
-          {
-            "type": "text",
-            "id": "product_image_url",
-            "label": "Product Image URL",
-            "info": "External image URL — used when no Shopify image is selected above"
-          }, {
-            "type": "text",
-            "id": "product_title",
-            "label": "Product Title",
-            "default": "Renewal Cream"
-          }, {
-            "type": "textarea",
-            "id": "product_description",
-            "label": "Product Description",
-            "default": "Smoothing, strengthening daily moisturizer"
-          }, {
-            "type": "text",
-            "id": "product_price",
-            "label": "Price (manual)",
-            "default": "$75.00",
-            "info": "Used only when no product is selected above"
-          }, {
-            "type": "url",
-            "id": "product_url",
-            "label": "Product URL (manual)",
-            "info": "Used only when no product is selected above"
-          }, {
-            "type": "text",
-            "id": "category_label",
-            "label": "Category Label",
-            "default": "Renew",
-            "info": "Badge displayed on top-left of image"
-          }, {
-            "type": "select",
-            "id": "badge_shape",
-            "label": "Badge Shape",
-            "options": [
-              {
-                "value": "square",
-                "label": "Square"
-              }, {
-                "value": "rectangle",
-                "label": "Rectangle"
-              }, {
-                "value": "triangle",
-                "label": "Triangle"
-              }, {
-                "value": "oval",
-                "label": "Oval"
-              }
-            ],
-            "default": "square",
-            "info": "Choose the shape icon for the badge"
-          }, {
-            "type": "checkbox",
-            "id": "show_rating",
-            "label": "Show Rating Stars",
-            "default": true
-          }, {
-            "type": "text",
-            "id": "rating_count",
-            "label": "Rating Count",
-            "default": "116",
-            "info": "Number displayed next to stars"
+{
+  "name": "Preview Product Section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f5f5f0"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Renew",
+      "info": "The ECHMA Collection"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#6366f1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#4f46e5"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Select a product — title, description, price and image will be pulled automatically"
+        },
+        {
+          "type": "header",
+          "content": "Manual Override (used when no product is selected)"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product Image"
+        },
+        {
+          "type": "text",
+          "id": "product_image_url",
+          "label": "Product Image URL",
+          "info": "External image URL — used when no Shopify image is selected above"
+        },
+        {
+          "type": "text",
+          "id": "product_title",
+          "label": "Product Title",
+          "default": "Renewal Cream"
+        },
+        {
+          "type": "textarea",
+          "id": "product_description",
+          "label": "Product Description",
+          "default": "Smoothing, strengthening daily moisturizer"
+        },
+        {
+          "type": "text",
+          "id": "product_price",
+          "label": "Price (manual)",
+          "default": "$75.00",
+          "info": "Used only when no product is selected above"
+        },
+        {
+          "type": "url",
+          "id": "product_url",
+          "label": "Product URL (manual)",
+          "info": "Used only when no product is selected above"
+        },
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Category Label",
+          "default": "Renew",
+          "info": "Badge displayed on top-left of image"
+        },
+        {
+          "type": "select",
+          "id": "badge_shape",
+          "label": "Badge Shape",
+          "options": [
+            {
+              "value": "square",
+              "label": "Square"
+            },
+            {
+              "value": "rectangle",
+              "label": "Rectangle"
+            },
+            {
+              "value": "triangle",
+              "label": "Triangle"
+            },
+            {
+              "value": "oval",
+              "label": "Oval"
+            }
+          ],
+          "default": "square",
+          "info": "Choose the shape icon for the badge"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_rating",
+          "label": "Show Rating Stars",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "rating_count",
+          "label": "Rating Count",
+          "default": "116",
+          "info": "Number displayed next to stars"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Preview Product Section",
+      "category": "Products",
+      "blocks": [
+        {
+          "type": "product_card",
+          "settings": {
+            "product_title": "Renewal Cream",
+            "product_description": "Smoothing, strengthening daily moisturizer",
+            "product_price": "$75.00",
+            "category_label": "Renew",
+            "badge_shape": "square",
+            "show_rating": true,
+            "rating_count": "116"
           }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "Preview Product Section",
-        "category": "Products",
-        "blocks": [
-          {
-            "type": "product_card",
-            "settings": {
-              "product_title": "Renewal Cream",
-              "product_description": "Smoothing, strengthening daily moisturizer",
-              "product_price": "$75.00",
-              "category_label": "Renew",
-              "badge_shape": "square",
-              "show_rating": true,
-              "rating_count": "116"
-            }
-          }, {
-            "type": "product_card",
-            "settings": {
-              "product_title": "Hydrating Serum",
-              "product_description": "Lightweight, fast-absorbing hydration boost",
-              "product_price": "$65.00",
-              "category_label": "Active",
-              "badge_shape": "triangle",
-              "show_rating": true,
-              "rating_count": "203"
-            }
-          }, {
-            "type": "product_card",
-            "settings": {
-              "product_title": "Brightening Essence",
-              "product_description": "Illuminating treatment for radiant skin",
-              "product_price": "$82.00",
-              "category_label": "Balance",
-              "badge_shape": "oval",
-              "show_rating": true,
-              "rating_count": "89"
-            }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "product_title": "Hydrating Serum",
+            "product_description": "Lightweight, fast-absorbing hydration boost",
+            "product_price": "$65.00",
+            "category_label": "Active",
+            "badge_shape": "triangle",
+            "show_rating": true,
+            "rating_count": "203"
           }
-        ]
-      }
-    ],
-    "max_blocks": 12
-  }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "product_title": "Brightening Essence",
+            "product_description": "Illuminating treatment for radiant skin",
+            "product_price": "$82.00",
+            "category_label": "Balance",
+            "badge_shape": "oval",
+            "show_rating": true,
+            "rating_count": "89"
+          }
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12
+}
 {% endschema %}

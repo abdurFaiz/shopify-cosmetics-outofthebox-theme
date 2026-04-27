@@ -1,65 +1,71 @@
-{% comment %} 
-                Banner 1 Section — TFC5™ Science Banner 
-                Full-viewport hero: hardcoded CDN background, eyebrow, heading, badge, body copy, CTA. 
-                Styled with Tailwind CSS v4.
-{% endcomment %}
-
 <section class="banner-1-section-{{ section.id }} full-width relative w-full min-h-screen overflow-hidden flex flex-col">
-
-  {{- '<!-- Background image -->' }}
+  {%- liquid
+    assign fetchpriority = 'auto'
+    assign loading = 'lazy'
+    if section.index == 1
+      assign fetchpriority = 'high'
+      assign loading = 'eager'
+    endif
+  -%}
   <div class="absolute inset-0 z-0">
-    <img
-      src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/banner_1.jpg?v=1776667195"
-      alt="TFC5™ breakthrough science background"
-      class="w-full h-full object-cover object-center"
-      loading="eager"
-      width="1920"
-      height="1080">
+    {{
+      images['banner_1.jpg']
+      | image_url: width: 1920
+      | image_tag:
+        class: 'w-full h-full object-cover object-center',
+        loading: loading,
+        fetchpriority: fetchpriority,
+        widths: '300, 500, 700, 900, 1200, 1920',
+        sizes: '100vw',
+        alt: 'TFC5™ breakthrough science background',
+        style: 'height: 100%;'
+    }}
   </div>
 
-  {{- '<!-- Bottom gradient overlay -->' }}
-  <div class="absolute inset-x-0 bottom-0 z-[1] h-[65%] pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.45) 40%, transparent 100%);"></div>
+  <div
+    class="absolute inset-x-0 bottom-0 z-[1] h-[65%] pointer-events-none"
+    style="background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.45) 40%, transparent 100%);"
+  ></div>
 
-  {{- '<!-- Content layer -->' }}
-  <div class="relative z-[2] flex flex-col justify-between min-h-screen w-full max-w-full px-10 py-12 box-border md:py-8">
-
-    {{- '<!-- Top-left: eyebrow + heading -->' }}
+  <div class="relative z-[2] flex flex-col gap-8 md:gap-0 justify-between min-h-screen w-full max-w-full px-6 md:px-10 box-border py-8">
     <div class="flex flex-col gap-2.5 max-w-[500px]">
       {% if section.settings.eyebrow != blank %}
-        <p class="m-0 text-white/85 font-sans text-[11px] font-medium uppercase leading-snug">
+        <p class="m-0 text-white/85 font-sans text-xs font-medium uppercase leading-snug">
           {{ section.settings.eyebrow }}
         </p>
       {% endif %}
       {% if section.settings.heading != blank %}
-        <h2 class="m-0 text-white font-serif font-normal leading-none text-8xl">
+        <h2 class="m-0 text-white font-serif font-normal leading-none text-5xl lg:text-8xl">
           {{ section.settings.heading }}
         </h2>
       {% endif %}
     </div>
 
-    {{- '<!-- Bottom row: badge + body on left, CTA on right -->' }}
-    <div class="flex items-end justify-between gap-6 md:gap-5">
-
-      {{- '<!-- Left: badge + body copy -->' }}
-      <div class="flex items-end gap-5 max-w-[1080px] md:flex-col md:items-start md:gap-3.5">
-
+    <div class="flex flex-col md:flex-row  items-end justify-between gap-6 md:gap-5">
+      <div class="flex items-end gap-5 max-w-[1080px] flex-col md:items-start md:gap-3.5">
         {% if section.settings.badge_image %}
-          <div class="shrink-0">
-            {{ section.settings.badge_image
- | image_url: width: 120
- | image_tag:
- loading: 'lazy',
- class: 'w-[90px] h-[90px] object-contain block',
- alt: section.settings.badge_image.alt | escape
+          <div class="shrink-0 ">
+            {{
+              section.settings.badge_image
+              | image_url: width: 120
+              | image_tag:
+                loading: 'lazy',
+                class: 'w-[90px] h-[90px] object-contain hidden md:block',
+                alt: section.settings.badge_image.alt
+              | escape
             }}
           </div>
         {% elsif section.settings.badge_text != blank %}
-          <div class="shrink-0 flex items-center justify-center opacity-90" aria-label="{{ section.settings.badge_text }}">
+          <div
+            class="shrink-0 md:flex items-center justify-center opacity-90 hidden "
+            aria-label="{{ section.settings.badge_text }}"
+          >
             <svg
               viewBox="0 0 120 120"
               width="90"
               height="90"
-              aria-hidden="true">
+              aria-hidden="true"
+            >
               <defs>
                 <path id="banner1-circle-path" d="M 60,60 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
               </defs>
@@ -105,185 +111,193 @@
         {% endif %}
       </div>
 
-      {{- '<!-- Right: CTA button -->' }}
       {% if section.settings.cta_label != blank %}
-        <div class="shrink-0 md:self-end">
-          <a href="{{ section.settings.cta_url | default: '#' }}" class="inline-block bg-white text-[#111] font-sans text-[12px] font-medium tracking-[0.12em] uppercase no-underline px-7 py-3.5 transition-colors duration-300 whitespace-nowrap hover:bg-white/88">
+        <div class="shrink-0 md:self-end md:w-fit w-full ">
+          <a
+            href="{{ section.settings.cta_url | default: '#' }}"
+            class="inline-block bg-white text-[#111] font-sans text-center md:text-right text-[12px] font-medium tracking-[0.12em] uppercase no-underline px-7 py-3.5 transition-colors duration-300 whitespace-nowrap md:w-fit w-full hover:bg-white/88"
+          >
             {{ section.settings.cta_label }}
           </a>
         </div>
       {% endif %}
-
     </div>
   </div>
-
 </section>
 
 <script>
-  (function() {
-  'use strict';
-  
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-  
-  gsap.registerPlugin(ScrollTrigger);
-  
-  const section = document.querySelector('.banner-1-section-{{ section.id }}');
-  if (!section) return;
-  
-  const mm = gsap.matchMedia();
-  
-  mm.add({
-    isDesktop: '(min-width: 1024px)',
-    isTablet: '(min-width: 768px) and (max-width: 1023px)',
-    isMobile: '(max-width: 767px)',
-    reduceMotion: '(prefers-reduced-motion: reduce)'
-  }, (context) => {
-    const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
-    
-    const xDistance = isMobile ? -30 : isTablet ? -40 : -50;
-    const duration = reduceMotion ? 0 : (isMobile ? 0.7 : 1);
-    
-    // Fade in eyebrow and heading from left
-    const headingGroup = section.querySelector('.flex.flex-col.gap-2\\.5');
-    if (headingGroup) {
-      gsap.from(headingGroup, {
-        opacity: reduceMotion ? 1 : 0,
-        x: reduceMotion ? 0 : xDistance,
-        duration: duration,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section,
-          start: isMobile ? 'top 75%' : 'top 70%',
-          toggleActions: 'play none none none'
+  (function () {
+    'use strict';
+
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const section = document.querySelector('.banner-1-section-{{ section.id }}');
+    if (!section) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      {
+        isDesktop: '(min-width: 1024px)',
+        isTablet: '(min-width: 768px) and (max-width: 1023px)',
+        isMobile: '(max-width: 767px)',
+        reduceMotion: '(prefers-reduced-motion: reduce)',
+      },
+      (context) => {
+        const { isDesktop, isTablet, isMobile, reduceMotion } = context.conditions;
+
+        const xDistance = isMobile ? -30 : isTablet ? -40 : -50;
+        const duration = reduceMotion ? 0 : isMobile ? 0.7 : 1;
+
+        // Fade in eyebrow and heading from left
+        const headingGroup = section.querySelector('.flex.flex-col.gap-2\\.5');
+        if (headingGroup) {
+          gsap.from(headingGroup, {
+            opacity: reduceMotion ? 1 : 0,
+            x: reduceMotion ? 0 : xDistance,
+            duration: duration,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: isMobile ? 'top 75%' : 'top 70%',
+              toggleActions: 'play none none none',
+            },
+          });
         }
-      });
-    }
-    
-    // Fade in badge
-    const badge = section.querySelector('.shrink-0');
-    if (badge) {
-      gsap.from(badge, {
-        opacity: reduceMotion ? 1 : 0,
-        scale: reduceMotion ? 1 : 0.8,
-        duration: reduceMotion ? 0 : 0.8,
-        ease: reduceMotion ? 'none' : 'back.out(1.7)',
-        scrollTrigger: {
-          trigger: badge,
-          start: isMobile ? 'top 85%' : 'top 80%',
-          toggleActions: 'play none none none'
+
+        // Fade in badge
+        const badge = section.querySelector('.shrink-0');
+        if (badge) {
+          gsap.from(badge, {
+            opacity: reduceMotion ? 1 : 0,
+            scale: reduceMotion ? 1 : 0.8,
+            duration: reduceMotion ? 0 : 0.8,
+            ease: reduceMotion ? 'none' : 'back.out(1.7)',
+            scrollTrigger: {
+              trigger: badge,
+              start: isMobile ? 'top 85%' : 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          });
         }
-      });
-    }
-    
-    // Fade in body text
-    const bodyText = section.querySelector('.text-white\\/88');
-    if (bodyText) {
-      gsap.from(bodyText, {
-        opacity: reduceMotion ? 1 : 0,
-        y: reduceMotion ? 0 : (isMobile ? 20 : 30),
-        duration: reduceMotion ? 0 : 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: bodyText,
-          start: isMobile ? 'top 85%' : 'top 80%',
-          toggleActions: 'play none none none'
+
+        // Fade in body text
+        const bodyText = section.querySelector('.text-white\\/88');
+        if (bodyText) {
+          gsap.from(bodyText, {
+            opacity: reduceMotion ? 1 : 0,
+            y: reduceMotion ? 0 : isMobile ? 20 : 30,
+            duration: reduceMotion ? 0 : 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: bodyText,
+              start: isMobile ? 'top 85%' : 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          });
         }
-      });
-    }
-    
-    // Fade in CTA button
-    const ctaBtn = section.querySelector('a.inline-block');
-    if (ctaBtn) {
-      gsap.from(ctaBtn, {
-        opacity: reduceMotion ? 1 : 0,
-        y: reduceMotion ? 0 : 20,
-        duration: reduceMotion ? 0 : 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: ctaBtn,
-          start: isMobile ? 'top 90%' : 'top 85%',
-          toggleActions: 'play none none none'
+
+        // Fade in CTA button
+        const ctaBtn = section.querySelector('a.inline-block');
+        if (ctaBtn) {
+          gsap.from(ctaBtn, {
+            opacity: reduceMotion ? 1 : 0,
+            y: reduceMotion ? 0 : 20,
+            duration: reduceMotion ? 0 : 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: ctaBtn,
+              start: isMobile ? 'top 90%' : 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          });
         }
-      });
-    }
-    
-    // Parallax background image (disabled on mobile and reduced motion)
-    const bgImg = section.querySelector('.absolute.inset-0 img');
-    if (bgImg && !isMobile && !reduceMotion) {
-      gsap.to(bgImg, {
-        y: isTablet ? 60 : 100,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1
+
+        // Parallax background image (disabled on mobile and reduced motion)
+        const bgImg = section.querySelector('.absolute.inset-0 img');
+        if (bgImg && !isMobile && !reduceMotion) {
+          gsap.to(bgImg, {
+            y: isTablet ? 60 : 100,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1,
+            },
+          });
         }
-      });
-    }
-  });
-  
+      }
+    );
   })();
 </script>
 
 {% schema %}
-  {
-    "name": "Banner 1 — Science",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Text Content"
-      },
-      {
-        "type": "text",
-        "id": "eyebrow",
-        "label": "Eyebrow Label",
-        "default": "Next-Generation Skincare"
-      },
-      {
-        "type": "text",
-        "id": "heading",
-        "label": "Heading",
-        "default": "BIO7™ Complex"
-      },
-      {
-        "type": "textarea",
-        "id": "body_text",
-        "label": "Body Copy",
-        "default": "BIO7™ is an advanced bio-signaling system engineered for skin experiencing moderate to deep stress. By mimicking the skin's own communication pathways, it accelerates cellular turnover, restores moisture equilibrium, and rebuilds structural resilience from within — delivering results that compound over time."
-      }, {
-        "type": "header",
-        "content": "Badge"
-      }, {
-        "type": "image_picker",
-        "id": "badge_image",
-        "label": "Badge Image",
-        "info": "Optional circular badge image. If empty, the SVG text badge below is used."
-      }, {
-        "type": "text",
-        "id": "badge_text",
-        "label": "Badge Circular Text",
-        "default": "Hydration improvement 94% | Collagen synthesis boost 3×",
-        "info": "Text rendered along a circular SVG path when no badge image is set."
-      }, {
-        "type": "header",
-        "content": "Call to Action"
-      }, {
-        "type": "text",
-        "id": "cta_label",
-        "label": "Button Label",
-        "default": "LEARN MORE"
-      }, {
-        "type": "url",
-        "id": "cta_url",
-        "label": "Button URL"
-      }
-    ],
-    "presets": [
-      {
-        "name": "Banner 1 — Science",
-        "category": "Banner"
-      }
-    ]
-  }
+{
+  "name": "Banner 1 — Science",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Label",
+      "default": "Next-Generation Skincare"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "BIO7™ Complex"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body Copy",
+      "default": "BIO7™ is an advanced bio-signaling system engineered for skin experiencing moderate to deep stress. By mimicking the skin's own communication pathways, it accelerates cellular turnover, restores moisture equilibrium, and rebuilds structural resilience from within — delivering results that compound over time."
+    },
+    {
+      "type": "header",
+      "content": "Badge"
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_image",
+      "label": "Badge Image",
+      "info": "Optional circular badge image. If empty, the SVG text badge below is used."
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Circular Text",
+      "default": "Hydration improvement 94% | Collagen synthesis boost 3×",
+      "info": "Text rendered along a circular SVG path when no badge image is set."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button Label",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner 1 — Science",
+      "category": "Banner"
+    }
+  ]
+}
 {% endschema %}

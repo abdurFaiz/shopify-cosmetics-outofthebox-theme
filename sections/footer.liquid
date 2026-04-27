@@ -1,8 +1,3 @@
-{% comment %} 
-          Footer Section - Multi-column layout with newsletter signup 
-          Layout: 3 columns (ECHMA links | Support links | Newsletter) + Bottom bar (Logo, social, legal)
-{% endcomment %}
-
 <style>
   #shopify-section-{{ section.id }} {
     --page-margin: 0 !important;
@@ -16,35 +11,35 @@
 </style>
 
 <footer class="relative w-full text-[#1a1a1a]">
-  {%- comment -%} Background Image - Full width {%- endcomment -%}
   <div class="absolute inset-0 w-full h-full">
     {% if section.settings.background_image %}
-      <img
-        src="{{ section.settings.background_image | image_url: width: 1920 }}"
-        alt="Footer background"
-        class="w-full h-full object-cover"
-        loading="lazy">
+      {{
+        section.settings.background_image
+        | image_url: width: 1920
+        | image_tag: class: 'w-full h-full object-cover', loading: 'lazy', alt: 'Footer background'
+      }}
     {% else %}
-      <img
-        src="https://cdn.shopify.com/s/files/1/0814/5217/1522/files/footer.jpg?v=1776645149"
-        alt="Footer background"
-        class="w-fit md:h-full object-cover"
-        loading="lazy">
+      {{
+        images['footer.jpg']
+        | image_url: width: 1920
+        | image_tag:
+          class: 'w-fit md:h-full object-cover',
+          loading: 'lazy',
+          alt: 'Footer background',
+          style: 'height: 100%; width: 100%;'
+      }}
     {% endif %}
   </div>
 
-  {%- comment -%} Content overlay {%- endcomment -%}
-  <div class="relative z-10 px-6">
-    {%- comment -%} Top section: 3 columns with white background box {%- endcomment -%}
-    <div class="pt-12 pb-8">
-      <div class="bg-white w-full px-12 pt-12 pb-32">
-        <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr] gap-12 lg:gap-16">
-          {%- comment -%} Column 1: ECHMA Navigation {%- endcomment -%}
-          <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wider pb-10">
+  <div class="relative z-10 px-4 sm:px-6 md:px-8 lg:px-12">
+    <div class="pt-8 sm:pt-10 md:pt-12 pb-6 sm:pb-8">
+      <div class="bg-white w-full px-4 sm:px-6 md:px-8 lg:px-12 pt-8 sm:pt-10 md:pt-12 pb-0 sm:pb-24 md:pb-32">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_2fr] gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+          <div class="mb-8 sm:mb-0">
+            <h3 class="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-6 sm:pb-10">
               {{ section.settings.col1_heading | default: 'ECHMA®' }}
             </h3>
-            <ul class="flex flex-col gap-2">
+            <ul class="flex flex-col gap-1.5 sm:gap-2">
               {% if section.settings.menu_col1 != blank %}
                 {% for link in section.settings.menu_col1.links %}
                   <li>
@@ -55,7 +50,9 @@
                 {% endfor %}
               {% else %}
                 <li>
-                  <a href="/collections/all" class="text-sm hover:opacity-60 transition-opacity">Shop</a>
+                  <a href="{{ routes.all_products_collection_url }}" class="text-sm hover:opacity-60 transition-opacity"
+                    >Shop</a
+                  >
                 </li>
                 <li>
                   <a href="/pages/about" class="text-sm hover:opacity-60 transition-opacity">About</a>
@@ -71,11 +68,11 @@
           </div>
 
           {%- comment -%} Column 2: Support {%- endcomment -%}
-          <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wider pb-10">
+          <div class="mb-8 sm:mb-0">
+            <h3 class="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-6 sm:pb-10">
               {{ section.settings.col2_heading | default: 'SUPPORT' }}
             </h3>
-            <ul class="flex flex-col gap-2">
+            <ul class="flex flex-col gap-1.5 sm:gap-2">
               {% if section.settings.menu_col2 != blank %}
                 {% for link in section.settings.menu_col2.links %}
                   <li>
@@ -92,7 +89,9 @@
                   <a href="/pages/faq" class="text-sm hover:opacity-60 transition-opacity">FAQs</a>
                 </li>
                 <li>
-                  <a href="/pages/delivery-returns" class="text-sm hover:opacity-60 transition-opacity">Delivery & Returns</a>
+                  <a href="/pages/delivery-returns" class="text-sm hover:opacity-60 transition-opacity"
+                    >Delivery & Returns</a
+                  >
                 </li>
                 <li>
                   <a href="/pages/track-order" class="text-sm hover:opacity-60 transition-opacity">Track your order</a>
@@ -105,36 +104,37 @@
           </div>
 
           {%- comment -%} Column 3: Newsletter Signup {%- endcomment -%}
-          <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wider pb-10">
+          <div class="sm:col-span-2 lg:col-span-1">
+            <h3 class="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-6 sm:pb-10">
               {{ section.settings.newsletter_heading | default: 'SIGN UP FOR NEWS & EXCLUSIVE STORIES' }}
             </h3>
 
-            {% form 'customer'
-              , class: 'newsletter-form' %}
-              <div class="flex flex-col gap-3">
+            {% form 'customer', class: 'newsletter-form' %}
+              <div class="flex flex-col gap-3 sm:gap-4">
                 <div class="relative">
                   <input
                     type="email"
                     name="contact[email]"
                     placeholder="Email"
-                    class="w-full bg-transparent border-b border-gray-200 text-sm py-2 pr-20 focus:outline-none focus:border-[#666]"
-                    required>
-                  <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 text-xs uppercase tracking-wider font-medium text-[#999] hover:text-[#1a1a1a] transition-colors">
+                    class="w-full bg-transparent border-b border-gray-200 text-xs sm:text-sm py-2 sm:py-3 pr-16 sm:pr-20 focus:outline-none focus:border-[#666]"
+                    required
+                  >
+                  <button
+                    type="submit"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] sm:text-xs uppercase tracking-wider font-medium text-[#999] hover:text-[#1a1a1a] transition-colors"
+                  >
                     SUBMIT
                   </button>
                 </div>
 
                 {% if section.settings.newsletter_terms != blank %}
-                  <p class="text-[11px] text-[#666] leading-relaxed">
+                  <p class="text-[10px] sm:text-[11px] text-[#666] leading-relaxed">
                     {{ section.settings.newsletter_terms }}
                   </p>
                 {% else %}
-                  <p class="text-[11px] text-[#666] leading-relaxed">
+                  <p class="text-[10px] sm:text-[11px] text-[#666] leading-relaxed">
                     By signing up, you agree to receive marketing emails from ECHMA in accordance with our
                     <a href="/pages/terms" class="underline hover:no-underline">Terms & Privacy Policy</a>. You can
- 
- 
                     unsubscribe at any time.
                   </p>
                 {% endif %}
@@ -146,31 +146,43 @@
     </div>
 
     {%- comment -%} Bottom bar: Logo, Social, Legal - transparent over image {%- endcomment -%}
-    <div class="pb-8">
-      <div class="max-w-[1400px] mx-auto px-8 lg:px-12">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div class="pb-6 sm:pb-8 md:pb-10">
+      <div class="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-6">
           {%- comment -%} Left: Logo + Tagline {%- endcomment -%}
           <div class="flex flex-col gap-1">
-            <div class="text-[132px] font-medium tracking-tight text-white">
+            <div class="text-3xl sm:text-5xl md:text-6xl lg:text-[132px] font-medium tracking-tight text-white leading-none">
               {{ section.settings.footer_logo_text | default: 'ECHMA' }}
             </div>
-
           </div>
           {%- comment -%} Right: Legal Links + Language + Copyright {%- endcomment -%}
-          <div class="flex flex-col items-start md:items-end gap-2">
-            <div class="flex flex-col items-end gap-3 text-sm">
+          <div class="flex flex-col items-start md:items-end gap-3 md:gap-2">
+            <div class="flex flex-col items-start md:items-end gap-2 md:gap-3 text-xs sm:text-sm">
               <span class="text-white/80">© ID - EN</span>
               {% if section.settings.menu_legal != blank %}
                 {% for link in section.settings.menu_legal.links %}
-                  <a href="{{ link.url }}" class="text-white/80 hover:text-white transition-colors">{{ link.title }}</a>
+                  <a
+                    href="{{ link.url }}"
+                    class="text-white/80 hover:text-white transition-colors"
+                  >
+                    {{- link.title -}}
+                  </a>
                 {% endfor %}
               {% else %}
-                <a href="/pages/terms" class="text-white/80 hover:text-white transition-colors">Terms & Conditions</a>
-                <a href="/pages/privacy" class="text-white/80 hover:text-white transition-colors">Privacy Policy</a>
-                <a href="/pages/accessibility" class="text-white/80 hover:text-white transition-colors">Accessibility Statement</a>
+                <a href="/pages/terms" class="text-white/80 hover:text-white transition-colors"
+                  >Terms & Conditions</a
+                >
+                <a href="/pages/privacy" class="text-white/80 hover:text-white transition-colors"
+                  >Privacy Policy</a
+                >
+                <a
+                  href="/pages/accessibility"
+                  class="text-white/80 hover:text-white transition-colors"
+                  >Accessibility Statement</a
+                >
               {% endif %}
             </div>
-            <div class="text-sm text-white/60">© ECHMA® 2025</div>
+            <div class="text-xs sm:text-sm text-white/60">© ECHMA® 2025</div>
           </div>
         </div>
       </div>
@@ -179,86 +191,100 @@
 </footer>
 
 {% schema %}
-  {
-    "name": "Footer",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Background"
-      },
-      {
-        "type": "image_picker",
-        "id": "background_image",
-        "label": "Background Image",
-        "info": "Recommended size: 1920x800px. Defaults to footer.jpg if not set."
-      },
-      {
-        "type": "header",
-        "content": "Column 1 - ECHMA"
-      },
-      {
-        "type": "text",
-        "id": "col1_heading",
-        "label": "Column 1 Heading",
-        "default": "ECHMA®"
-      }, {
-        "type": "link_list",
-        "id": "menu_col1",
-        "label": "Column 1 Menu"
-      }, {
-        "type": "header",
-        "content": "Column 2 - Support"
-      }, {
-        "type": "text",
-        "id": "col2_heading",
-        "label": "Column 2 Heading",
-        "default": "SUPPORT"
-      }, {
-        "type": "link_list",
-        "id": "menu_col2",
-        "label": "Column 2 Menu"
-      }, {
-        "type": "header",
-        "content": "Column 3 - Newsletter"
-      }, {
-        "type": "text",
-        "id": "newsletter_heading",
-        "label": "Newsletter Heading",
-        "default": "SIGN UP FOR NEWS & EXCLUSIVE STORIES"
-      }, {
-        "type": "textarea",
-        "id": "newsletter_terms",
-        "label": "Newsletter Terms Text"
-      }, {
-        "type": "header",
-        "content": "Bottom Bar"
-      }, {
-        "type": "text",
-        "id": "footer_logo_text",
-        "label": "Logo Text",
-        "default": "ECHMA"
-      }, {
-        "type": "text",
-        "id": "footer_tagline",
-        "label": "Tagline",
-        "default": "Powered by Augustinus Bader Science"
-      }, {
-        "type": "url",
-        "id": "social_instagram",
-        "label": "Instagram URL"
-      }, {
-        "type": "url",
-        "id": "social_youtube",
-        "label": "YouTube URL"
-      }, {
-        "type": "url",
-        "id": "social_tiktok",
-        "label": "TikTok URL"
-      }, {
-        "type": "link_list",
-        "id": "menu_legal",
-        "label": "Legal Links Menu"
-      }
-    ]
-  }
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Recommended size: 1920x800px. Defaults to footer.jpg if not set."
+    },
+    {
+      "type": "header",
+      "content": "Column 1 - ECHMA"
+    },
+    {
+      "type": "text",
+      "id": "col1_heading",
+      "label": "Column 1 Heading",
+      "default": "ECHMA®"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_col1",
+      "label": "Column 1 Menu"
+    },
+    {
+      "type": "header",
+      "content": "Column 2 - Support"
+    },
+    {
+      "type": "text",
+      "id": "col2_heading",
+      "label": "Column 2 Heading",
+      "default": "SUPPORT"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_col2",
+      "label": "Column 2 Menu"
+    },
+    {
+      "type": "header",
+      "content": "Column 3 - Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter Heading",
+      "default": "SIGN UP FOR NEWS & EXCLUSIVE STORIES"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_terms",
+      "label": "Newsletter Terms Text"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Bar"
+    },
+    {
+      "type": "text",
+      "id": "footer_logo_text",
+      "label": "Logo Text",
+      "default": "ECHMA"
+    },
+    {
+      "type": "text",
+      "id": "footer_tagline",
+      "label": "Tagline",
+      "default": "Powered by Augustinus Bader Science"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "social_youtube",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_legal",
+      "label": "Legal Links Menu"
+    }
+  ]
+}
 {% endschema %}

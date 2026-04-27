@@ -1,0 +1,14 @@
+[environments.development]
+store = "echma.myshopify.com"
+theme = "160304169218"
+ignore = [
+  "config/settings_data.json"
+]
+
+[environments.production]
+store = "echma.myshopify.com"
+theme = ""      
+ignore = [
+  "config/settings_data.json",
+  "templates/*.json"
+]
