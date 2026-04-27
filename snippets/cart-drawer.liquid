@@ -23,7 +23,10 @@
       </h2>
       {%- comment -%} Free Shipping Progress Bar {%- endcomment -%}
       <div class="flex flex-col gap-2 w-full max-w-md">
-        <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden"></div>
+        <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div id="shipping-progress" class="h-full bg-[#241EC6] transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <p id="shipping-message" class="text-xs text-gray-500">Add more for Free Shipping</p>
       </div>
     </div>
     <button
@@ -153,60 +156,6 @@
         <p class="text-gray-500 text-base">Your bag is empty</p>
       </div>
     {%- endif -%}
-
-    {%- comment -%} Complete Your Routine Section {%- endcomment -%}
-    <div class="mt-8" id="cart-recommendations">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-sans text-lg font-normal text-cosmetics-dark">Complete Your Routine</h3>
-        <div class="flex gap-2">
-          <button
-            type="button"
-            class="recommendation-nav w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-            data-direction="prev"
-            aria-label="Previous recommendations"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <path
-                d="M10 3L5 8L10 13"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="recommendation-nav w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-            data-direction="next"
-            aria-label="Next recommendations"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <path
-                d="M6 3L11 8L6 13"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {%- comment -%} Recommendation Cards {%- endcomment -%}
-      <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide" id="recommendations-container">
-        {%- comment -%} These will be populated dynamically or via product recommendations {%- endcomment -%}
-      </div>
-    </div>
   </div>
 
   {%- comment -%} Footer with Subtotal and Checkout {%- endcomment -%}
@@ -282,14 +231,20 @@
     // Update shipping progress
     function updateShippingProgress(totalPrice) {
       const progress = Math.min((totalPrice / FREE_SHIPPING_THRESHOLD) * 100, 100);
-      shippingProgress.style.width = progress + '%';
 
-      if (totalPrice >= FREE_SHIPPING_THRESHOLD) {
-        shippingMessage.textContent = "You've unlocked Free Shipping!";
-      } else {
-        const remaining = FREE_SHIPPING_THRESHOLD - totalPrice;
-        const remainingFormatted = formatMoney(remaining);
-        shippingMessage.textContent = 'Add ' + remainingFormatted + ' more for Free Shipping';
+      // Null check for safety
+      if (shippingProgress) {
+        shippingProgress.style.width = progress + '%';
+      }
+
+      if (shippingMessage) {
+        if (totalPrice >= FREE_SHIPPING_THRESHOLD) {
+          shippingMessage.textContent = "You've unlocked Free Shipping!";
+        } else {
+          const remaining = FREE_SHIPPING_THRESHOLD - totalPrice;
+          const remainingFormatted = formatMoney(remaining);
+          shippingMessage.textContent = 'Add ' + remainingFormatted + ' more for Free Shipping';
+        }
       }
     }
 
@@ -388,6 +343,9 @@
       attachQuantityListeners();
     }
 
+    // Track processing state
+    const processingItems = {};
+
     // Attach quantity button listeners
     function attachQuantityListeners() {
       const qtyBtns = document.querySelectorAll('.cart-qty-btn');
@@ -408,19 +366,39 @@
         });
       });
 
-      // Handle direct input changes
+      // Handle direct input changes with debounce
       const qtyInputs = document.querySelectorAll('input[data-key]');
       qtyInputs.forEach(function (input) {
+        let timeout;
         input.addEventListener('change', function () {
           const key = this.dataset.key;
           const qty = Math.max(0, parseInt(this.value, 10) || 0);
-          updateCartItem(key, qty);
+
+          clearTimeout(timeout);
+          timeout = setTimeout(function () {
+            updateCartItem(key, qty);
+          }, 300);
         });
       });
     }
 
-    // Update cart item quantity
+    // Update cart item quantity with request locking
     function updateCartItem(key, quantity) {
+      //  Prevent duplicate requests for same item
+      if (processingItems[key]) return;
+
+      processingItems[key] = true;
+      const btn = document.querySelector('button[data-key="' + key + '"]');
+      if (btn) {
+        btn.disabled = true;
+      }
+
+      const timeoutId = setTimeout(() => {
+        processingItems[key] = false;
+        if (btn) btn.disabled = false;
+        alert('Request took too long. Please try again.');
+      }, 8000);
+
       fetch('/cart/change.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -430,11 +408,20 @@
           return response.json();
         })
         .then(function (cart) {
+          clearTimeout(timeoutId);
+          processingItems[key] = false;
+          if (btn) btn.disabled = false;
+
           updateCart();
           document.dispatchEvent(new CustomEvent('cart:updated', { detail: cart }));
         })
         .catch(function (error) {
+          clearTimeout(timeoutId);
+          processingItems[key] = false;
+          if (btn) btn.disabled = false;
+
           console.error('Error updating cart:', error);
+          alert('Failed to update quantity. Please try again.');
         });
     }
 

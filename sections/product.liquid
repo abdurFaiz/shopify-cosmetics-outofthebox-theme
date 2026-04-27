@@ -50,7 +50,7 @@
                         widths: '500, 750, 1000',
                         class: 'w-full h-full object-cover object-center',
                         alt: image.alt,
-                        style : 'height: 100%;'
+                        style: 'height: 100%;'
                       | default: product.title
                       | escape
                     }}
@@ -63,7 +63,7 @@
                         widths: '500, 750, 1000',
                         class: 'w-full h-full object-cover object-center',
                         alt: image.alt,
-                        style : 'height: 100%;'
+                        style: 'height: 100%;'
                       | default: product.title
                       | escape
                     }}
@@ -752,15 +752,24 @@
 
   // ── Complete The Routine - Add to Cart ────────────────────────
   const routineAddBtns = section.querySelectorAll('.routine-add-to-cart');
+  const routineProcessing = {};
 
   routineAddBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
       const variantId = this.dataset.variantId;
-      if (!variantId) return;
+      if (!variantId || routineProcessing[variantId]) return;
 
-      // Disable button and show loading state
+      //  Prevent duplicate requests
+      routineProcessing[variantId] = true;
       btn.disabled = true;
       btn.classList.add('opacity-50');
+
+      const timeoutId = setTimeout(() => {
+        routineProcessing[variantId] = false;
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+        alert('Request took too long. Please try again.');
+      }, 8000);
 
       // Add to cart via Shopify Cart API
       fetch('/cart/add.js', {
@@ -775,73 +784,92 @@
       })
       .then(function (response) { return response.json(); })
       .then(function (data) {
-        // Success - trigger cart drawer
-        console.log('Added to cart:', data);
-
-        // Re-enable button
+        clearTimeout(timeoutId);
+        routineProcessing[variantId] = false;
         btn.disabled = false;
         btn.classList.remove('opacity-50');
 
-        // Dispatch custom event for cart update
-        document.dispatchEvent(new CustomEvent('cart:updated'));
+
+
+        // ✅ Small delay to ensure server processed request
+        setTimeout(function () {
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+        }, 300);
       })
       .catch(function (error) {
-        console.error('Error adding to cart:', error);
+        clearTimeout(timeoutId);
+        routineProcessing[variantId] = false;
         btn.disabled = false;
         btn.classList.remove('opacity-50');
+
+        alert('Failed to add to cart. Please try again.');
       });
     });
   });
 
   // ── Main Product Form - Add to Cart ────────────────────────────
   const productForm = section.querySelector('#product-form');
+  let formProcessing = false;
 
   if (productForm) {
     productForm.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (formProcessing) return;
 
       const formData = new FormData(productForm);
       const addBtn = productForm.querySelector('[name="add"]');
 
-      // Disable button and show loading state
-      if (addBtn) {
-        addBtn.disabled = true;
-        addBtn.classList.add('opacity-50');
-        const originalText = addBtn.textContent;
-        addBtn.textContent = 'ADDING...';
+      if (!addBtn) return;
 
-        // Add to cart via Shopify Cart API
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: formData.get('id'),
-            quantity: parseInt(formData.get('quantity') || '1', 10)
-          })
+      // Set processing flag
+      formProcessing = true;
+      addBtn.disabled = true;
+      addBtn.classList.add('opacity-50');
+      const originalText = addBtn.textContent;
+      addBtn.textContent = 'ADDING...';
+
+      const timeoutId = setTimeout(() => {
+        formProcessing = false;
+        addBtn.disabled = false;
+        addBtn.classList.remove('opacity-50');
+        addBtn.textContent = originalText;
+        alert('Request took too long. Please try again.');
+      }, 10000);
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: formData.get('id'),
+          quantity: parseInt(formData.get('quantity') || '1', 10)
         })
-        .then(function (response) { return response.json(); })
-        .then(function (data) {
-          // Success - trigger cart drawer
-          console.log('Added to cart:', data);
+      })
+      .then(response => response.json())
+      .then(data => {
+        clearTimeout(timeoutId);
+        formProcessing = false;
+        addBtn.disabled = false;
+        addBtn.classList.remove('opacity-50');
+        addBtn.textContent = originalText;
 
-          // Re-enable button
-          addBtn.disabled = false;
-          addBtn.classList.remove('opacity-50');
-          addBtn.textContent = originalText;
-
-          // Dispatch custom event to open cart drawer
+        // ✅ Small delay to ensure server has processed the request
+        setTimeout(function () {
           document.dispatchEvent(new CustomEvent('cart:add'));
-        })
-        .catch(function (error) {
-          console.error('Error adding to cart:', error);
-          addBtn.disabled = false;
-          addBtn.classList.remove('opacity-50');
-          addBtn.textContent = originalText;
-          alert('Error adding to cart. Please try again.');
-        });
-      }
+        }, 300);
+        console.log('Added to cart:', data);
+      })
+      .catch(error => {
+        clearTimeout(timeoutId);
+        formProcessing = false;
+        addBtn.disabled = false;
+        addBtn.classList.remove('opacity-50');
+        addBtn.textContent = originalText;
+
+        console.error('Error adding to cart:', error);
+        alert('Error adding to cart. Please try again.');
+      });
     });
   }
 
